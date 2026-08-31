@@ -4,161 +4,215 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Новый день</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body, html { width: 100%; height: 100%; overflow: hidden; background-color: #000; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        /* Главное исправление: по умолчанию ВСЕ экраны строго скрыты */
-        .screen {
-            display: none; 
-            width: 100%;
-            height: 100%;
-            flex-direction: column;
+        body {
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
             justify-content: center;
-            align-items: center;
-            text-align: center;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
             padding: 20px;
-            position: absolute;
-            top: 0; left: 0;
+            background-color: #000;
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-        }
-
-        /* Показываем ТОЛЬКО первый экран при старте */
-        #screen1 { 
-            display: flex; 
-            background-image: url('https://abrakadabra.fun');
-        }
-        
-        /* Белая табличка для Первого экрана */
-        .card {
-            background-color: #fff;
-            padding: 40px 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            max-width: 90%;
-            width: 400px;
             position: relative;
-            z-index: 2;
-        }
-        .card h1 { color: #000; font-size: 26px; margin-bottom: 30px; font-weight: 700; }
-        
-        .btn {
-            display: inline-block;
-            padding: 14px 40px;
-            font-size: 18px;
-            font-weight: bold;
-            text-decoration: none;
-            border-radius: 30px;
-            cursor: pointer;
-            border: none;
-            transition: transform 0.2s, opacity 0.2s;
-        }
-        .btn:active { transform: scale(0.95); }
-        .btn-black { background-color: #000; color: #fff; }
-        
-        /* ЭКРАНЫ 2 и 3: Арт «Новый день» (Выбор и Да) */
-        .spidey-bg-main {
-            background-image: url('https://championat.com');
+            transition: background-image 0.3s ease;
         }
 
-        /* ЭКРАН 4: Мем с Майлзом (Нет) */
-        .spidey-bg-sad {
-            background-color: #0c0d12;
-            background-image: url('https://meme-arsenal.com');
-            background-size: contain;
-            background-position: center;
-        }
-        
-        /* Затемнение поверх картинок для читаемости */
-        .spidey-bg-main::before, #screen1::before {
+        /* Затемнение для заднего фона, чтобы карточки читались */
+        body::before {
             content: "";
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0, 0, 0, 0.4);
             z-index: 1;
         }
-        
-        /* Красный блок с текстом */
-        .spidey-box {
+
+        /* Стили для ФОНОВ (меняются скриптом) */
+        body.bg-start {
+            background-image: url('https://abrakadabra.fun');
+        }
+        body.bg-main {
+            background-image: url('https://championat.com');
+        }
+        body.bg-sad {
+            background-color: #0c0d12;
+            background-image: url('https://meme-arsenal.com');
+            background-size: contain;
+        }
+        body.bg-sad::before {
+            display: none; /* убираем затемнение на меме */
+        }
+
+        /* Общие карточки */
+        .card {
             position: relative;
             z-index: 2;
-            background: rgba(209, 25, 25, 0.85);
-            border: 4px solid #fff;
-            padding: 35px 25px;
-            border-radius: 20px;
-            color: #fff;
-            max-width: 90%;
-            width: 440px;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            padding: 40px 25px;
+            border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
         }
 
-        /* Черная плашка для экрана с мемом, чтобы не закрывать лицо Майлза */
-        .sad-box {
+        /* Карточка 1: Белая стартовая */
+        .card-white {
+            background: #ffffff;
+            color: #000000;
+        }
+        .card-white h1 {
+            font-size: 2.1rem;
+            font-weight: 800;
+            margin-bottom: 30px;
+            color: #000;
+        }
+
+        /* Карточки Паука: Полупрозрачные красные */
+        .card-spidey {
+            background: rgba(209, 25, 25, 0.88);
+            border: 4px solid #ffffff;
+            color: #ffffff;
+            box-shadow: 0 0 35px rgba(209, 25, 25, 0.4);
+        }
+
+        /* Особая карточка для мема с Майлзом (Черная плашка внизу) */
+        .card-sad {
             margin-top: auto;
-            margin-bottom: 40px;
-            background: rgba(0, 0, 0, 0.8) !important;
-            border-color: #e21b1b !important;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.85);
+            border: 4px solid #e21b1b;
+            color: #ffffff;
         }
-        
-        .spidey-box h2 {
-            font-size: 24px;
+
+        .hidden { display: none !important; }
+
+        .question {
+            font-size: 1.6rem;
             line-height: 1.4;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+            font-weight: 700;
+            margin-bottom: 35px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
-        
-        /* Кнопки Да / Нет */
-        .btn-zone { display: flex; gap: 20px; justify-content: center; margin-top: 30px; }
-        .btn-yes { background-color: #ffffff; color: #d11919; } 
-        .btn-no { background-color: #222222; color: #ffffff; }  
-        .btn-yes:hover, .btn-no:hover { opacity: 0.9; }
+
+        /* Кнопки */
+        .buttons { display: flex; gap: 20px; justify-content: center; }
+        .btn {
+            border: none;
+            font-weight: 700;
+            font-size: 1.5rem;
+            padding: 14px 35px;
+            border-radius: 100px;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.1s;
+        }
+        .btn:active { transform: scale(0.95); }
+
+        .btn-start { background: #000000; color: #ffffff; }
+        .btn-yes { background: #ffffff; color: #d11919; }
+        .btn-no { background: #222222; color: #ffffff; }
+
+        .back-btn {
+            margin-top: 25px;
+            border: none;
+            font-size: 1.1rem;
+            padding: 10px 22px;
+            border-radius: 40px;
+            font-weight: 700;
+            cursor: pointer;
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.4);
+        }
     </style>
 </head>
-<body>
+<body class="bg-start">
 
-    <!-- ЭКРАН 1: Старт -->
-    <div id="screen1" class="screen">
-        <div class="card">
-            <h1>ну что ж погнали)</h1>
-            <button class="btn btn-black" onclick="nextScreen(2)">Вперед</button>
-        </div>
+    <!-- ЭКРАН 1: Старт (Черный стиль, белая плашка) -->
+    <div id="screen1" class="card card-white">
+        <h1>ну что ж погнали)</h1>
+        <button class="btn btn-start" onclick="goMain()">Вперед</button>
     </div>
 
-    <!-- ЭКРАН 2: Приглашение -->
-    <div id="screen2" class="screen spidey-bg-main">
-        <div class="spidey-box">
-            <h2>Привет, это человек паук!<br>готова идти гулять?</h2>
-            <div class="btn-zone">
-                <button class="btn btn-yes" onclick="nextScreen(3)">Да</button>
-                <button class="btn btn-no" onclick="nextScreen(4)">Нет</button>
-            </div>
+    <!-- ЭКРАН 2: Главный вопрос Паука -->
+    <div id="main" class="card card-spidey hidden">
+        <div class="question">Привет, это человек паук!<br>готова идти гулять?</div>
+        <div class="buttons">
+            <button class="btn btn-yes" onclick="ans('yes')">Да</button>
+            <button class="btn btn-no" onclick="ans('no')">Нет</button>
         </div>
     </div>
 
     <!-- ЭКРАН 3: Согласие (ДА) -->
-    <div id="screen3" class="screen spidey-bg-main">
-        <div class="spidey-box">
-            <h2>жду тебя на у пляжки в 15:00</h2>
-        </div>
+    <div id="yes" class="card card-spidey hidden">
+        <div class="question">жду тебя на у пляжки в 15:00</div>
+        <button class="back-btn" onclick="back()">← вернуться</button>
     </div>
 
     <!-- ЭКРАН 4: Отказ (НЕТ) -->
-    <div id="screen4" class="screen spidey-bg-sad">
-        <div class="spidey-box sad-box">
-            <h2>это обидно но человек паук не сдаётся и идёт дальше</h2>
-        </div>
+    <div id="no" class="card card-spidey card-sad hidden">
+        <div class="question">this is fine... ладно<br>это обидно но человек паук не сдаётся и идёт дальше</div>
+        <button class="back-btn" onclick="back()">← вернуться</button>
     </div>
 
-    <script>
-        // Функция переключения экранов
-        function nextScreen(screenId) {
-            // Сначала строго скрываем вообще все экраны
-            document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
-            // Показываем только тот, на который нажали
-            document.getElementById('screen' + screenId).style.style.setProperty('display', 'flex', 'important');
-            document.getElementById('screen' + screenId).style.display = 'flex';
+<script>
+const tg = window.Telegram?.WebApp;
+if(tg) { tg.ready(); tg.expand(); }
+
+// Шаг 1: переход со стартового экрана к вопросу Паука
+function goMain() {
+    document.getElementById('screen1').classList.add('hidden');
+    document.getElementById('main').classList.remove('hidden');
+    
+    // Меняем фон на Паука «Новый день»
+    document.body.className = 'bg-main';
+}
+
+function ans(c) {
+    document.getElementById('main').classList.add('hidden');
+    let t = '', u = 'Кто-то';
+    
+    if(tg?.initDataUnsafe?.user) {
+        const d = tg.initDataUnsafe.user;
+        u = [d.first_name, d.last_name].filter(Boolean).join(' ') || 'Кто-то';
+        if(d.username) u += ' (@' + d.username + ')';
+    }
+    
+    if(c === 'yes') {
+        document.getElementById('yes').classList.remove('hidden');
+        document.body.className = 'bg-main'; // сохраняем фон
+        if(typeof confetti === 'function') {
+            confetti({particleCount: 150, spread: 80, origin: {y: 0.5, x: 0.5}});
         }
-    </script>
+        t = '🕷️ 🔴 <b>' + u + '</b> ответил(а): ДА, ИДЁТ ГУЛЯТЬ!';
+    } else {
+        document.getElementById('no').classList.remove('hidden');
+        document.body.className = 'bg-sad'; // включаем фон мема с Майлзом
+        t = '🕷️ ⚫ <b>' + u + '</b> отказался(ась)... Человек-паук грустит.';
+    }
+    
+    // Ваш рабочий бот Telegram
+    fetch('https://api.telegram.org/bot8689645734:AAH5alIT5e3XdhThNWlV-jq76V_ALsvJq0Y/sendMessage', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({chat_id: '6269187112', text: t, parse_mode: 'HTML'})
+    }).then(r => r.json()).then(d => {
+        if(d.ok && tg) setTimeout(() => tg.close(), 3000);
+    });
+}
+
+function back() {
+    document.getElementById('main').classList.remove('hidden');
+    document.getElementById('yes').classList.add('hidden');
+    document.getElementById('no').classList.add('hidden');
+    document.body.className = 'bg-main'; // возвращаем основной фон Человека-паука
+}
+</script>
 </body>
 </html>
