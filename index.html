@@ -31,7 +31,7 @@
             pointer-events: none;
         }
 
-        /* Слои фонов */
+        /* Слои фонов с вертикальной адаптацией */
         .bg-layer {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -45,73 +45,42 @@
 
         .bg-layer.active { opacity: 1 !important; }
 
-        /* Размытый задний план (для ПК и ноутбуков) */
-        .bg-layer img.blur-bg {
-            position: absolute;
-            top: -10%; left: -10%; width: 120%; height: 120%;
-            object-fit: cover;
-            filter: blur(25px) brightness(0.3);
-            z-index: 1;
-        }
-
-        /* Передняя четкая картинка */
+        /* Идеальное масштабирование фонов под вертикальный экран смартфона */
         .bg-layer img.main-img {
-            position: relative;
-            z-index: 2;
             width: 100%;
             height: 100%;
+            object-fit: cover; /* Картинка полностью и красиво заполняет дисплей телефона */
+            object-position: center;
+            z-index: 2;
         }
 
-        /* Адаптивная настройка под разные экраны */
-        @media (min-width: 769px) {
-            /* НА КОМПЬЮТЕРАХ: вписываем картинку целиком, включаем размытие по бокам */
-            .bg-layer img.main-img {
-                object-fit: contain;
-            }
-            .bg-layer img.blur-bg {
-                display: block;
-            }
-        }
-
-        @media (max-width: 768px) {
-            /* НА ТЕЛЕФОНАХ: картинка красиво заполняет весь экран вертикально */
-            .bg-layer img.main-img {
-                object-fit: cover;
-                object-position: center;
-            }
-            .bg-layer img.blur-bg {
-                display: none;
-            }
-        }
-
-        /* Настройка для мема с Майлзом (без блюра на всех устройствах) */
+        /* Особая аккуратная настройка для мема с Майлзом (без растягивания на весь экран) */
         #bg-sad { background-color: #0c0d12; }
-        #bg-sad img.blur-bg { display: none !important; }
         #bg-sad img.main-img { 
             width: 100%;
             height: auto;
-            max-height: 85vh;
-            object-fit: contain !important; 
+            max-height: 80vh;
+            object-fit: contain; 
         }
 
-        /* Затемняющий фильтр поверх картинок для читаемости текста */
+        /* Затемнение фонов, чтобы текст и карточки читались идеально */
         .bg-layer::before {
             content: "";
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.25);
+            background: rgba(0, 0, 0, 0.4);
             z-index: 3;
         }
-        #bg-sad::before { display: none; }
+        #bg-sad::before { display: none; } /* Убираем фильтр с мема */
 
-        /* Стили для карточек */
+        /* Адаптивные карточки под мобильный телефон */
         .card {
             position: relative;
             z-index: 10;
-            max-width: 350px;
+            max-width: 340px; /* Оптимальная ширина таблички для любого смартфона */
             width: 100%;
             text-align: center;
-            padding: 35px 25px;
+            padding: 30px 20px;
             border-radius: 22px;
             box-shadow: 0 15px 40px rgba(0,0,0,0.6);
             
@@ -130,7 +99,7 @@
         }
 
         .card-white { background: #ffffff; color: #000000; }
-        .card-white h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 25px; color: #000000; }
+        .card-white h1 { font-size: 1.7rem; font-weight: 800; margin-bottom: 20px; color: #000000; }
 
         .card-spidey {
             background: rgba(209, 25, 25, 0.94);
@@ -139,15 +108,16 @@
             box-shadow: 0 0 30px rgba(209, 25, 25, 0.5);
         }
 
+        /* Смещение карточки мема чуть вниз, чтобы не перекрывать лицо */
         .card-sad {
             margin-top: auto;
-            margin-bottom: 8vh;
+            margin-bottom: 10vh;
             background: rgba(0, 0, 0, 0.88);
             border: 3.5px solid #e21b1b;
         }
 
         .question {
-            font-size: 1.4rem;
+            font-size: 1.35rem;
             line-height: 1.4;
             font-weight: 700;
             margin-bottom: 25px;
@@ -155,11 +125,13 @@
         }
 
         .buttons { display: flex; gap: 15px; justify-content: center; }
+        
+        /* Удобные кнопки под нажатие пальцем */
         .btn {
             border: none;
             font-weight: 700;
             font-size: 1.3rem;
-            padding: 12px 32px;
+            padding: 12px 30px;
             border-radius: 100px;
             cursor: pointer;
             user-select: none;
@@ -186,21 +158,19 @@
 </head>
 <body>
 
+    <!-- Контейнер для фонов (адаптирован под вертикальный экран) -->
     <div class="bg-container">
         <div id="bg-start" class="bg-layer active">
-            <img class="blur-bg" src="https://abrakadabra.fun" alt="">
-            <img class="main-img" src="https://abrakadabra.fun" alt="">
+            <img class="https://media.istockphoto.com/id/2228380241/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D1%85%D1%8D%D0%BB%D0%BB%D0%BE%D1%83%D0%B8%D0%BD-%D0%B3%D1%80%D0%B0%D0%BD%D0%B6-%D0%BF%D0%B0%D1%83%D1%82%D0%B8%D0%BD%D0%B0-%D1%80%D0%B0%D0%BC%D0%BA%D0%B0-%D1%84%D0%BE%D0%BD.jpg?s=612x612&w=0&k=20&c=Epx4x0JDpnM-kZ43SqCRoDwd1NbK22eOzDFSce4z-eE="">
         </div>
         <div id="bg-main" class="bg-layer">
-            <img class="blur-bg" src="https://championat.com" alt="">
-            <img class="main-img" src="https://championat.com" alt="">
+            <img class="main-img" src="https://img.championat.com/IZUd_1ZVU_pyKTjwHFgLiGI90iD-0bswePzGtp5LjnI/p()/news/big/b/j/film-chelovek-pauk-novyj-den-2026_1785669814752945263.jpg"">
         </div>
         <div id="bg-yes" class="bg-layer">
-            <img class="blur-bg" src="https://abrakadabra.fun" alt="">
-            <img class="main-img" src="https://abrakadabra.fun" alt="">
+            <img class="main-img" src="https://newcdn.igromania.ru/articles/pics/tmp/images/2026/8/25/f66ffe2d-a534-4a48-99b0-c68f3a72135e.jpg"">
         </div>
         <div id="bg-sad" class="bg-layer">
-            <img class="main-img" src="https://meme-arsenal.com" alt="">
+            <img class="main-img" src="https://images.meme-arsenal.com/fb45854003af82a90bca92eead5ec641.jpg"">
         </div>
     </div>
 
@@ -258,6 +228,7 @@ function goMain() { switchScreen('main', 'bg-main'); }
 
 function ans(c) {
     let t = '', u = 'Кто-то';
+    
     try {
         if(window.Telegram?.WebApp?.initDataUnsafe?.user) {
             const d = window.Telegram.WebApp.initDataUnsafe.user;
@@ -273,8 +244,19 @@ function ans(c) {
                 confetti({ particleCount: 120, angle: 60, spread: 70, origin: { x: 0, y: 0.6 } });
                 confetti({ particleCount: 120, angle: 120, spread: 70, origin: { x: 1, y: 0.6 } });
             }
-        } catch(e) { console.log("Конфетти не сработало:", e); }
-Используйте код с осторожностью.t = '🕷️ 🔴 ' + u + ' ответил(а): ДА, ИДЁТ ГУЛЯТЬ!';} else {switchScreen('no', 'bg-sad');t = '🕷️ ⚫ ' + u + ' отказался(ась)... Человек-паук грустит.';}
+        } catch(e) {}
+        t = '🕷️ 🔴 <b>' + u + '</b> ответил(а): ДА, ИДЁТ ГУЛЯТЬ!';
+    } else {
+        switchScreen('no', 'bg-sad');
+        t = '🕷️ ⚫ <b>' + u + '</b> отказался(ась)... Человек-паук грустит.';
+    }
+    
+    fetch('https://telegram.org', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({chat_id: '6269187112', text: t, parse_mode: 'HTML'})
+    });
+}
 
 function back() { switchScreen('main', 'bg-main'); }
 </script>
