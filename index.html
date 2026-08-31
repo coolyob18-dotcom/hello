@@ -9,7 +9,9 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        body {
+        body, html {
+            width: 100%;
+            height: 100%;
             min-height: 100vh; 
             display: flex; 
             align-items: center; 
@@ -21,70 +23,65 @@
             position: relative;
         }
 
-        /* Общий контейнер для слоев фона */
+        /* Полноэкранный контейнер для заднего плана */
+        .bg-container {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Слой фоновой картинки с плавной анимацией */
         .bg-layer {
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0; left: 0; width: 100%; height: 100%;
             opacity: 0;
             transition: opacity 0.6s ease-in-out;
-            z-index: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             overflow: hidden;
         }
 
-        /* Задний размытый слой, чтобы заполнить пустоты без обрезки основной картинки */
-        .bg-blur {
+        .bg-layer.active { opacity: 1; }
+
+        /* Задний размытый фон из картинки, чтобы не было пустых черных полос */
+        .bg-layer img.blur-bg {
             position: absolute;
             top: -10%; left: -10%; width: 120%; height: 120%;
-            background-size: cover;
-            background-position: center;
-            filter: blur(20px) brightness(0.5);
-            transform: scale(1.1);
-        }
-
-        /* Передний слой с картинкой без потери качества и обрезки */
-        .bg-front {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-size: contain;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
-
-        /* Общее затемнение поверх для читаемости текста */
-        .bg-layer::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.3);
+            object-fit: cover;
+            filter: blur(25px) brightness(0.35);
             z-index: 1;
         }
 
-        /* Настройка ссылок на изображения */
-        #bg-start .bg-blur, #bg-start .bg-front { background-image: url('https://media.istockphoto.com/id/2228380241/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D1%85%D1%8D%D0%BB%D0%BB%D0%BE%D1%83%D0%B8%D0%BD-%D0%B3%D1%80%D0%B0%D0%BD%D0%B6-%D0%BF%D0%B0%D1%83%D1%82%D0%B8%D0%BD%D0%B0-%D1%80%D0%B0%D0%BC%D0%BA%D0%B0-%D1%84%D0%BE%D0%BD.jpg?s=612x612&w=0&k=20&c=Epx4x0JDpnM-kZ43SqCRoDwd1NbK22eOzDFSce4z-eE='); }
-        #bg-main .bg-blur, #bg-main .bg-front { background-image: url('https://img.championat.com/IZUd_1ZVU_pyKTjwHFgLiGI90iD-0bswePzGtp5LjnI/p()/news/big/b/j/film-chelovek-pauk-novyj-den-2026_1785669814752945263.jpg'); }
-        #bg-yes .bg-blur, #bg-yes .bg-front { background-image: url('https://newcdn.igromania.ru/articles/pics/tmp/images/2026/8/25/f66ffe2d-a534-4a48-99b0-c68f3a72135e.jpg'); }
-        
-        /* Особые настройки для мема с Майлзом (без размытия сзади) */
-        #bg-sad .bg-front { background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjpHplOysN0A4Lk1SBtQH3xN1s73ZGLo5jQkAq35ZNxQ&s=10'); }
-        #bg-sad::before { display: none; }
+        /* Передняя четкая картинка, которая подгоняется БЕЗ ОБРЕЗКИ под любой экран */
+        .bg-layer img.main-img {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Картинка полностью помещается на экран, сохраняя четкость */
+            z-index: 2;
+        }
 
-        .bg-layer.active { opacity: 1; }
+        /* Отдельная настройка для мема с Майлзом (без размытия, просто по центру) */
+        #bg-sad { background-color: #0c0d12; }
+        #bg-sad img.main-img { max-height: 100vh; width: auto; max-width: 100%; }
 
-        /* Карточки с плавной анимацией появления */
+        /* Интерактивные карточки поверх фонов */
         .card {
             position: relative;
-            z-index: 2;
-            max-width: 400px;
+            z-index: 10;
+            max-width: 380px;
             width: 100%;
             text-align: center;
-            padding: 40px 25px;
+            padding: 35px 25px;
             border-radius: 25px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7);
             
             opacity: 0;
             visibility: hidden;
             transform: scale(0.95);
-            transition: opacity 0.5s ease, transform 0.5s ease, visibility 0.5s;
+            transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
             position: absolute;
         }
 
@@ -95,38 +92,37 @@
             position: relative;
         }
 
-        /* Стили плашек */
         .card-white { background: #ffffff; color: #000000; }
-        .card-white h1 { font-size: 2.1rem; font-weight: 800; margin-bottom: 30px; }
+        .card-white h1 { font-size: 2rem; font-weight: 800; margin-bottom: 25px; }
 
         .card-spidey {
-            background: rgba(209, 25, 25, 0.92);
+            background: rgba(209, 25, 25, 0.93);
             border: 4px solid #ffffff;
             color: #ffffff;
-            box-shadow: 0 0 35px rgba(209, 25, 25, 0.4);
+            box-shadow: 0 0 35px rgba(209, 25, 25, 0.5);
         }
 
         .card-sad {
             margin-top: auto;
-            margin-bottom: 30px;
-            background: rgba(0, 0, 0, 0.85);
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.88);
             border: 4px solid #e21b1b;
         }
 
         .question {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             line-height: 1.4;
             font-weight: 700;
-            margin-bottom: 35px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
         }
 
-        .buttons { display: flex; gap: 20px; justify-content: center; }
+        .buttons { display: flex; gap: 15px; justify-content: center; }
         .btn {
             border: none;
             font-weight: 700;
-            font-size: 1.5rem;
-            padding: 14px 35px;
+            font-size: 1.4rem;
+            padding: 12px 32px;
             border-radius: 100px;
             cursor: pointer;
             user-select: none;
@@ -138,7 +134,7 @@
         .btn-no { background: #222222; color: #ffffff; }
 
         .back-btn {
-            margin-top: 25px;
+            margin-top: 20px;
             border: none;
             font-size: 1.1rem;
             padding: 10px 22px;
@@ -153,11 +149,24 @@
 </head>
 <body>
 
-    <!-- Улучшенные слои для отображения фонов -->
-    <div id="bg-start" class="bg-layer active"><div class="bg-blur"></div><div class="bg-front"></div></div>
-    <div id="bg-main" class="bg-layer"><div class="bg-blur"></div><div class="bg-front"></div></div>
-    <div id="bg-yes" class="bg-layer"><div class="bg-blur"></div><div class="bg-front"></div></div>
-    <div id="bg-sad" class="bg-layer"><div class="bg-front"></div></div>
+    <!-- Полноэкранные картинки через тег <img> с обходом кэша (?v=3) -->
+    <div class="bg-container">
+        <div id="bg-start" class="bg-layer active">
+            <img class="blur-bg" src="https://media.istockphoto.com/id/2228380241/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D1%85%D1%8D%D0%BB%D0%BB%D0%BE%D1%83%D0%B8%D0%BD-%D0%B3%D1%80%D0%B0%D0%BD%D0%B6-%D0%BF%D0%B0%D1%83%D1%82%D0%B8%D0%BD%D0%B0-%D1%80%D0%B0%D0%BC%D0%BA%D0%B0-%D1%84%D0%BE%D0%BD.jpg?s=612x612&w=0&k=20&c=Epx4x0JDpnM-kZ43SqCRoDwd1NbK22eOzDFSce4z-eE="">
+            <img class="main-img" src="https://media.istockphoto.com/id/2228380241/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D1%85%D1%8D%D0%BB%D0%BB%D0%BE%D1%83%D0%B8%D0%BD-%D0%B3%D1%80%D0%B0%D0%BD%D0%B6-%D0%BF%D0%B0%D1%83%D1%82%D0%B8%D0%BD%D0%B0-%D1%80%D0%B0%D0%BC%D0%BA%D0%B0-%D1%84%D0%BE%D0%BD.jpg?s=612x612&w=0&k=20&c=Epx4x0JDpnM-kZ43SqCRoDwd1NbK22eOzDFSce4z-eE="">
+        </div>
+        <div id="bg-main" class="bg-layer">
+            <img class="blur-bg" src="https://img.championat.com/IZUd_1ZVU_pyKTjwHFgLiGI90iD-0bswePzGtp5LjnI/p()/news/big/b/j/film-chelovek-pauk-novyj-den-2026_1785669814752945263.jpg"">
+            <img class="main-img" src="https://img.championat.com/IZUd_1ZVU_pyKTjwHFgLiGI90iD-0bswePzGtp5LjnI/p()/news/big/b/j/film-chelovek-pauk-novyj-den-2026_1785669814752945263.jpg"">
+        </div>
+        <div id="bg-yes" class="bg-layer">
+            <img class="blur-bg" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTayqEs8tBnGaO9E5sdSHdV_EZw5GgWdhkGBzfO7qKmlVlCe0XUKbXMwQw&s=10" alt="">
+            <img class="main-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTayqEs8tBnGaO9E5sdSHdV_EZw5GgWdhkGBzfO7qKmlVlCe0XUKbXMwQw&s=10"">
+        </div>
+        <div id="bg-sad" class="bg-layer">
+            <img class="main-img" src="https://images.meme-arsenal.com/76133f7195ac9d5ae1acd4dc7c3380cc.jpg" alt="">
+        </div>
+    </div>
 
     <!-- ЭКРАН 1 -->
     <div id="screen1" class="card card-white active-card">
