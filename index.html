@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>What's the point?</title>
+    <title>Новый день</title>
     <script src="https://telegram.org"></script>
     <script src="https://jsdelivr.net"></script>
     <style>
@@ -45,7 +45,7 @@
 
         .bg-layer.active { opacity: 1 !important; }
 
-        /* Размытый задний план (работает и на ПК, и на телефонах) */
+        /* Размытый задний план (для ПК и ноутбуков) */
         .bg-layer img.blur-bg {
             position: absolute;
             top: -10%; left: -10%; width: 120%; height: 120%;
@@ -62,29 +62,29 @@
             height: 100%;
         }
 
-        /* Умная настройка под разные устройства */
+        /* Адаптивная настройка под разные экраны */
         @media (min-width: 769px) {
-            /* ДЛЯ КОМПЬЮТЕРОВ И НОУТБУКОВ: картинка вписывается целиком и не обрезается */
+            /* НА КОМПЬЮТЕРАХ: вписываем картинку целиком, включаем размытие по бокам */
             .bg-layer img.main-img {
                 object-fit: contain;
             }
             .bg-layer img.blur-bg {
-                display: block; /* Включаем размытие по бокам на ПК */
+                display: block;
             }
         }
 
         @media (max-width: 768px) {
-            /* ДЛЯ ТЕЛЕФОНОВ: картинка заполняет весь экран вертикально */
+            /* НА ТЕЛЕФОНАХ: картинка красиво заполняет весь экран вертикально */
             .bg-layer img.main-img {
                 object-fit: cover;
                 object-position: center;
             }
             .bg-layer img.blur-bg {
-                display: none; /* На смартфонах размытие сзади не нужно */
+                display: none;
             }
         }
 
-        /* Особая настройка для мема с Майлзом (на всех устройствах без блюра) */
+        /* Настройка для мема с Майлзом (без блюра на всех устройствах) */
         #bg-sad { background-color: #0c0d12; }
         #bg-sad img.blur-bg { display: none !important; }
         #bg-sad img.main-img { 
@@ -104,7 +104,7 @@
         }
         #bg-sad::before { display: none; }
 
-        /* Компактные и аккуратные карточки */
+        /* Стили для карточек */
         .card {
             position: relative;
             z-index: 10;
@@ -188,19 +188,19 @@
 
     <div class="bg-container">
         <div id="bg-start" class="bg-layer active">
-            <img class="blur-bg" src="https://media.istockphoto.com/id/2228380241/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D1%85%D1%8D%D0%BB%D0%BB%D0%BE%D1%83%D0%B8%D0%BD-%D0%B3%D1%80%D0%B0%D0%BD%D0%B6-%D0%BF%D0%B0%D1%83%D1%82%D0%B8%D0%BD%D0%B0-%D1%80%D0%B0%D0%BC%D0%BA%D0%B0-%D1%84%D0%BE%D0%BD.jpg?s=612x612&w=0&k=20&c=Epx4x0JDpnM-kZ43SqCRoDwd1NbK22eOzDFSce4z-eE=" alt="">
-            <img class="main-img" src="https://media.istockphoto.com/id/2228380241/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D1%85%D1%8D%D0%BB%D0%BB%D0%BE%D1%83%D0%B8%D0%BD-%D0%B3%D1%80%D0%B0%D0%BD%D0%B6-%D0%BF%D0%B0%D1%83%D1%82%D0%B8%D0%BD%D0%B0-%D1%80%D0%B0%D0%BC%D0%BA%D0%B0-%D1%84%D0%BE%D0%BD.jpg?s=612x612&w=0&k=20&c=Epx4x0JDpnM-kZ43SqCRoDwd1NbK22eOzDFSce4z-eE=" alt="">
+            <img class="blur-bg" src="https://abrakadabra.fun" alt="">
+            <img class="main-img" src="https://abrakadabra.fun" alt="">
         </div>
         <div id="bg-main" class="bg-layer">
-            <img class="blur-bg" src="https://img.championat.com/IZUd_1ZVU_pyKTjwHFgLiGI90iD-0bswePzGtp5LjnI/p()/news/big/b/j/film-chelovek-pauk-novyj-den-2026_1785669814752945263.jpg"">
-            <img class="main-img" src="https://img.championat.com/IZUd_1ZVU_pyKTjwHFgLiGI90iD-0bswePzGtp5LjnI/p()/news/big/b/j/film-chelovek-pauk-novyj-den-2026_1785669814752945263.jpg"">
+            <img class="blur-bg" src="https://championat.com" alt="">
+            <img class="main-img" src="https://championat.com" alt="">
         </div>
         <div id="bg-yes" class="bg-layer">
-            <img class="blur-bg" src="https://newcdn.igromania.ru/articles/pics/tmp/images/2026/8/25/f66ffe2d-a534-4a48-99b0-c68f3a72135e.jpg" alt="">
-            <img class="main-img" src="https://newcdn.igromania.ru/articles/pics/tmp/images/2026/8/25/f66ffe2d-a534-4a48-99b0-c68f3a72135e.jpg" alt="">
+            <img class="blur-bg" src="https://abrakadabra.fun" alt="">
+            <img class="main-img" src="https://abrakadabra.fun" alt="">
         </div>
         <div id="bg-sad" class="bg-layer">
-            <img class="main-img" src="https://images.meme-arsenal.com/fb45854003af82a90bca92eead5ec641.jpg" alt="">
+            <img class="main-img" src="https://meme-arsenal.com" alt="">
         </div>
     </div>
 
@@ -273,14 +273,8 @@ function ans(c) {
                 confetti({ particleCount: 120, angle: 60, spread: 70, origin: { x: 0, y: 0.6 } });
                 confetti({ particleCount: 120, angle: 120, spread: 70, origin: { x: 1, y: 0.6 } });
             }
-Используйте код с осторожностью.} catch(e) {}t = '🕷️ 🔴 ' + u + ' ответил(а): ДА, ИДЁТ ГУЛЯТЬ!';} else {switchScreen('no', 'bg-sad');t = '🕷️ ⚫ ' + u + ' отказался(ась)... Человек-паук грустит.';}
-    
-    fetch('https://telegram.org', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({chat_id: '6269187112', text: t, parse_mode: 'HTML'})
-    });
-}
+        } catch(e) { console.log("Конфетти не сработало:", e); }
+Используйте код с осторожностью.t = '🕷️ 🔴 ' + u + ' ответил(а): ДА, ИДЁТ ГУЛЯТЬ!';} else {switchScreen('no', 'bg-sad');t = '🕷️ ⚫ ' + u + ' отказался(ась)... Человек-паук грустит.';}
 
 function back() { switchScreen('main', 'bg-main'); }
 </script>
