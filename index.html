@@ -8,12 +8,11 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body, html { width: 100%; height: 100%; overflow: hidden; background-color: #000; }
         
-        /* Общие стили для экранов */
+        /* Главное исправление: по умолчанию ВСЕ экраны строго скрыты */
         .screen {
-            display: none;
+            display: none; 
             width: 100%;
             height: 100%;
-            display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -26,7 +25,7 @@
             background-repeat: no-repeat;
         }
 
-        /* ЭКРАН 1: Фон с Человеком-пауком на паутине */
+        /* Показываем ТОЛЬКО первый экран при старте */
         #screen1 { 
             display: flex; 
             background-image: url('https://abrakadabra.fun');
@@ -64,15 +63,15 @@
             background-image: url('https://championat.com');
         }
 
-        /* ЭКРАН 4: Аккуратное расположение мема с Майлзом без размытия */
+        /* ЭКРАН 4: Мем с Майлзом (Нет) */
         .spidey-bg-sad {
-            background-color: #0c0d12; /* Темный фон в тон картинки */
-            background-image: url('https://images.meme-arsenal.com/76133f7195ac9d5ae1acd4dc7c3380cc.jpg');
-            background-size: contain; /* Картинка впишется целиком и не размоется */
+            background-color: #0c0d12;
+            background-image: url('https://meme-arsenal.com');
+            background-size: contain;
             background-position: center;
         }
         
-        /* Затемнение поверх картинок для читаемости (кроме экрана с мемом) */
+        /* Затемнение поверх картинок для читаемости */
         .spidey-bg-main::before, #screen1::before {
             content: "";
             position: absolute;
@@ -95,11 +94,11 @@
             box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
         }
 
-        /* Особый блок для экрана с мемом, чтобы он сместился вниз и не закрывал лицо Майлза */
+        /* Черная плашка для экрана с мемом, чтобы не закрывать лицо Майлза */
         .sad-box {
             margin-top: auto;
             margin-bottom: 40px;
-            background: rgba(0, 0, 0, 0.8) !important; /* Черная плашка для контраста */
+            background: rgba(0, 0, 0, 0.8) !important;
             border-color: #e21b1b !important;
         }
         
@@ -152,9 +151,12 @@
     </div>
 
     <script>
-        // Функция моментального переключения экранов
+        // Функция переключения экранов
         function nextScreen(screenId) {
+            // Сначала строго скрываем вообще все экраны
             document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
+            // Показываем только тот, на который нажали
+            document.getElementById('screen' + screenId).style.style.setProperty('display', 'flex', 'important');
             document.getElementById('screen' + screenId).style.display = 'flex';
         }
     </script>
