@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Новый день</title>
+    <!-- Подключаем Telegram WebApp и библиотеку Конфетти -->
     <script src="https://telegram.org"></script>
-    <script src="https://jsdelivr.net"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -23,7 +24,7 @@
             position: relative;
         }
 
-        /* Полноэкранный контейнер для заднего плана */
+        /* Полноэкранный контейнер для фонов */
         .bg-container {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -31,7 +32,7 @@
             pointer-events: none;
         }
 
-        /* Слой фоновой картинки с плавной анимацией */
+        /* Слои фонов с красивой плавной анимацией растворения */
         .bg-layer {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -45,7 +46,7 @@
 
         .bg-layer.active { opacity: 1; }
 
-        /* Задний размытый фон из картинки, чтобы не было пустых черных полос */
+        /* Размытие заднего плана, чтобы заполнить поля под любой экран */
         .bg-layer img.blur-bg {
             position: absolute;
             top: -10%; left: -10%; width: 120%; height: 120%;
@@ -54,20 +55,20 @@
             z-index: 1;
         }
 
-        /* Передняя четкая картинка, которая подгоняется БЕЗ ОБРЕЗКИ под любой экран */
+        /* Передняя картинка без потери качества и обрезки */
         .bg-layer img.main-img {
             position: relative;
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Картинка полностью помещается на экран, сохраняя четкость */
+            object-fit: contain;
             z-index: 2;
         }
 
-        /* Отдельная настройка для мема с Майлзом (без размытия, просто по центру) */
+        /* Настройка для мема с Майлзом (без блюра) */
         #bg-sad { background-color: #0c0d12; }
         #bg-sad img.main-img { max-height: 100vh; width: auto; max-width: 100%; }
 
-        /* Интерактивные карточки поверх фонов */
+        /* Стили для карточек */
         .card {
             position: relative;
             z-index: 10;
@@ -78,6 +79,7 @@
             border-radius: 25px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.7);
             
+            /* Плавное выплывание карточек */
             opacity: 0;
             visibility: hidden;
             transform: scale(0.95);
@@ -149,7 +151,7 @@
 </head>
 <body>
 
-    <!-- Полноэкранные картинки через тег <img> с обходом кэша (?v=3) -->
+    <!-- Контейнер картинок через тег <img> с защитой от кэширования (?v=4) -->
     <div class="bg-container">
         <div id="bg-start" class="bg-layer active">
             <img class="blur-bg" src="https://media.istockphoto.com/id/2228380241/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D1%85%D1%8D%D0%BB%D0%BB%D0%BE%D1%83%D0%B8%D0%BD-%D0%B3%D1%80%D0%B0%D0%BD%D0%B6-%D0%BF%D0%B0%D1%83%D1%82%D0%B8%D0%BD%D0%B0-%D1%80%D0%B0%D0%BC%D0%BA%D0%B0-%D1%84%D0%BE%D0%BD.jpg?s=612x612&w=0&k=20&c=Epx4x0JDpnM-kZ43SqCRoDwd1NbK22eOzDFSce4z-eE="">
@@ -160,11 +162,11 @@
             <img class="main-img" src="https://img.championat.com/IZUd_1ZVU_pyKTjwHFgLiGI90iD-0bswePzGtp5LjnI/p()/news/big/b/j/film-chelovek-pauk-novyj-den-2026_1785669814752945263.jpg"">
         </div>
         <div id="bg-yes" class="bg-layer">
-            <img class="blur-bg" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTayqEs8tBnGaO9E5sdSHdV_EZw5GgWdhkGBzfO7qKmlVlCe0XUKbXMwQw&s=10" alt="">
-            <img class="main-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTayqEs8tBnGaO9E5sdSHdV_EZw5GgWdhkGBzfO7qKmlVlCe0XUKbXMwQw&s=10"">
+            <img class="blur-bg" src="https://newcdn.igromania.ru/articles/pics/tmp/images/2026/8/25/f66ffe2d-a534-4a48-99b0-c68f3a72135e.jpg"">
+            <img class="main-img" src="https://newcdn.igromania.ru/articles/pics/tmp/images/2026/8/25/f66ffe2d-a534-4a48-99b0-c68f3a72135e.jpg"">
         </div>
         <div id="bg-sad" class="bg-layer">
-            <img class="main-img" src="https://images.meme-arsenal.com/76133f7195ac9d5ae1acd4dc7c3380cc.jpg" alt="">
+            <img class="main-img" src="https://images.meme-arsenal.com/fb45854003af82a90bca92eead5ec641.jpg"">
         </div>
     </div>
 
@@ -223,9 +225,15 @@ function ans(c) {
     
     if(c === 'yes') {
         switchScreen('yes', 'bg-yes');
-        if(typeof confetti === 'function') {
-            confetti({particleCount: 150, spread: 80, origin: {y: 0.5, x: 0.5}});
-        }
+        
+        // КОРРЕКТНЫЙ НЕЗАВИСИМЫЙ ВЫЗОВ КОНФЕТТИ
+        try {
+            if (typeof confetti === 'function') {
+                confetti({ particleCount: 120, angle: 60, spread: 70, origin: { x: 0, y: 0.6 } });
+                confetti({ particleCount: 120, angle: 120, spread: 70, origin: { x: 1, y: 0.6 } });
+            }
+        } catch(e) { console.log(e); }
+        
         t = '🕷️ 🔴 <b>' + u + '</b> ответил(а): ДА, ИДЁТ ГУЛЯТЬ!';
     } else {
         switchScreen('no', 'bg-sad');
