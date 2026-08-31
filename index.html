@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Новый день</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
+    <script src="https://telegram.org"></script>
+    <script src="https://jsdelivr.net"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -16,40 +16,61 @@
             justify-content: center;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
             padding: 20px;
-            background-color: #000;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            background-color: #0c0d12;
+            overflow: hidden;
             position: relative;
-            transition: background-image 0.3s ease;
         }
 
-        /* Затемнение для заднего фона, чтобы карточки читались */
-        body::before {
+        /* Общий контейнер для слоев фона */
+        .bg-layer {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        /* Задний размытый слой, чтобы заполнить пустоты без обрезки основной картинки */
+        .bg-blur {
+            position: absolute;
+            top: -10%; left: -10%; width: 120%; height: 120%;
+            background-size: cover;
+            background-position: center;
+            filter: blur(20px) brightness(0.5);
+            transform: scale(1.1);
+        }
+
+        /* Передний слой с картинкой без потери качества и обрезки */
+        .bg-front {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* Общее затемнение поверх для читаемости текста */
+        .bg-layer::before {
             content: "";
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.3);
             z-index: 1;
         }
 
-        /* Стили для ФОНОВ (меняются скриптом) */
-        body.bg-start {
-            background-image: url('https://media.istockphoto.com/id/2228380241/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D1%85%D1%8D%D0%BB%D0%BB%D0%BE%D1%83%D0%B8%D0%BD-%D0%B3%D1%80%D0%B0%D0%BD%D0%B6-%D0%BF%D0%B0%D1%83%D1%82%D0%B8%D0%BD%D0%B0-%D1%80%D0%B0%D0%BC%D0%BA%D0%B0-%D1%84%D0%BE%D0%BD.jpg?s=612x612&w=0&k=20&c=Epx4x0JDpnM-kZ43SqCRoDwd1NbK22eOzDFSce4z-eE=');
-        }
-        body.bg-main {
-            background-image: url('https://img.championat.com/IZUd_1ZVU_pyKTjwHFgLiGI90iD-0bswePzGtp5LjnI/p()/news/big/b/j/film-chelovek-pauk-novyj-den-2026_1785669814752945263.jpg');
-        }
-        body.bg-sad {
-            background-color: #0c0d12;
-            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjpHplOysN0A4Lk1SBtQH3xN1s73ZGLo5jQkAq35ZNxQ&s=10');
-            background-size: contain;
-        }
-        body.bg-sad::before {
-            display: none; /* убираем затемнение на меме */
-        }
+        /* Настройка ссылок на изображения */
+        #bg-start .bg-blur, #bg-start .bg-front { background-image: url('https://media.istockphoto.com/id/2228380241/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D1%85%D1%8D%D0%BB%D0%BB%D0%BE%D1%83%D0%B8%D0%BD-%D0%B3%D1%80%D0%B0%D0%BD%D0%B6-%D0%BF%D0%B0%D1%83%D1%82%D0%B8%D0%BD%D0%B0-%D1%80%D0%B0%D0%BC%D0%BA%D0%B0-%D1%84%D0%BE%D0%BD.jpg?s=612x612&w=0&k=20&c=Epx4x0JDpnM-kZ43SqCRoDwd1NbK22eOzDFSce4z-eE='); }
+        #bg-main .bg-blur, #bg-main .bg-front { background-image: url('https://img.championat.com/IZUd_1ZVU_pyKTjwHFgLiGI90iD-0bswePzGtp5LjnI/p()/news/big/b/j/film-chelovek-pauk-novyj-den-2026_1785669814752945263.jpg'); }
+        #bg-yes .bg-blur, #bg-yes .bg-front { background-image: url('https://newcdn.igromania.ru/articles/pics/tmp/images/2026/8/25/f66ffe2d-a534-4a48-99b0-c68f3a72135e.jpg'); }
+        
+        /* Особые настройки для мема с Майлзом (без размытия сзади) */
+        #bg-sad .bg-front { background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjpHplOysN0A4Lk1SBtQH3xN1s73ZGLo5jQkAq35ZNxQ&s=10'); }
+        #bg-sad::before { display: none; }
 
-        /* Общие карточки */
+        .bg-layer.active { opacity: 1; }
+
+        /* Карточки с плавной анимацией появления */
         .card {
             position: relative;
             z-index: 2;
@@ -59,38 +80,38 @@
             padding: 40px 25px;
             border-radius: 25px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.95);
+            transition: opacity 0.5s ease, transform 0.5s ease, visibility 0.5s;
+            position: absolute;
         }
 
-        /* Карточка 1: Белая стартовая */
-        .card-white {
-            background: #ffffff;
-            color: #000000;
-        }
-        .card-white h1 {
-            font-size: 2.1rem;
-            font-weight: 800;
-            margin-bottom: 30px;
-            color: #000;
+        .card.active-card {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+            position: relative;
         }
 
-        /* Карточки Паука: Полупрозрачные красные */
+        /* Стили плашек */
+        .card-white { background: #ffffff; color: #000000; }
+        .card-white h1 { font-size: 2.1rem; font-weight: 800; margin-bottom: 30px; }
+
         .card-spidey {
-            background: rgba(209, 25, 25, 0.88);
+            background: rgba(209, 25, 25, 0.92);
             border: 4px solid #ffffff;
             color: #ffffff;
             box-shadow: 0 0 35px rgba(209, 25, 25, 0.4);
         }
 
-        /* Особая карточка для мема с Майлзом (Черная плашка внизу) */
         .card-sad {
             margin-top: auto;
             margin-bottom: 30px;
             background: rgba(0, 0, 0, 0.85);
             border: 4px solid #e21b1b;
-            color: #ffffff;
         }
-
-        .hidden { display: none !important; }
 
         .question {
             font-size: 1.6rem;
@@ -100,7 +121,6 @@
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
 
-        /* Кнопки */
         .buttons { display: flex; gap: 20px; justify-content: center; }
         .btn {
             border: none;
@@ -113,7 +133,6 @@
             transition: transform 0.1s;
         }
         .btn:active { transform: scale(0.95); }
-
         .btn-start { background: #000000; color: #ffffff; }
         .btn-yes { background: #ffffff; color: #d11919; }
         .btn-no { background: #222222; color: #ffffff; }
@@ -132,16 +151,22 @@
         }
     </style>
 </head>
-<body class="bg-start">
+<body>
 
-    <!-- ЭКРАН 1: Старт (Черный стиль, белая плашка) -->
-    <div id="screen1" class="card card-white">
+    <!-- Улучшенные слои для отображения фонов -->
+    <div id="bg-start" class="bg-layer active"><div class="bg-blur"></div><div class="bg-front"></div></div>
+    <div id="bg-main" class="bg-layer"><div class="bg-blur"></div><div class="bg-front"></div></div>
+    <div id="bg-yes" class="bg-layer"><div class="bg-blur"></div><div class="bg-front"></div></div>
+    <div id="bg-sad" class="bg-layer"><div class="bg-front"></div></div>
+
+    <!-- ЭКРАН 1 -->
+    <div id="screen1" class="card card-white active-card">
         <h1>ну что ж погнали)</h1>
         <button class="btn btn-start" onclick="goMain()">Вперед</button>
     </div>
 
-    <!-- ЭКРАН 2: Главный вопрос Паука -->
-    <div id="main" class="card card-spidey hidden">
+    <!-- ЭКРАН 2 -->
+    <div id="main" class="card card-spidey">
         <div class="question">Привет, это человек паук!<br>готова идти гулять?</div>
         <div class="buttons">
             <button class="btn btn-yes" onclick="ans('yes')">Да</button>
@@ -149,14 +174,14 @@
         </div>
     </div>
 
-    <!-- ЭКРАН 3: Согласие (ДА) -->
-    <div id="yes" class="card card-spidey hidden">
-        <div class="question">жду тебя на у пляжки в 15:00</div>
+    <!-- ЭКРАН 3 -->
+    <div id="yes" class="card card-spidey">
+        <div class="question">ждю тебя на у пляжки в 15:00</div>
         <button class="back-btn" onclick="back()">← вернуться</button>
     </div>
 
-    <!-- ЭКРАН 4: Отказ (НЕТ) -->
-    <div id="no" class="card card-spidey card-sad hidden">
+    <!-- ЭКРАН 4 -->
+    <div id="no" class="card card-spidey card-sad">
         <div class="question">this is fine... ладно<br>это обидно но человек паук не сдаётся и идёт дальше</div>
         <button class="back-btn" onclick="back()">← вернуться</button>
     </div>
@@ -165,19 +190,22 @@
 const tg = window.Telegram?.WebApp;
 if(tg) { tg.ready(); tg.expand(); }
 
-// Шаг 1: переход со стартового экрана к вопросу Паука
-function goMain() {
-    document.getElementById('screen1').classList.add('hidden');
-    document.getElementById('main').classList.remove('hidden');
-    
-    // Меняем фон на Паука «Новый день»
-    document.body.className = 'bg-main';
+function switchScreen(targetCardId, targetBgId) {
+    const activeCard = document.querySelector('.card.active-card');
+    if (activeCard) activeCard.classList.remove('active-card');
+
+    document.querySelectorAll('.bg-layer').forEach(layer => layer.classList.remove('active'));
+    document.getElementById(targetBgId).classList.add('active');
+
+    setTimeout(() => {
+        document.getElementById(targetCardId).classList.add('active-card');
+    }, 50);
 }
 
+function goMain() { switchScreen('main', 'bg-main'); }
+
 function ans(c) {
-    document.getElementById('main').classList.add('hidden');
     let t = '', u = 'Кто-то';
-    
     if(tg?.initDataUnsafe?.user) {
         const d = tg.initDataUnsafe.user;
         u = [d.first_name, d.last_name].filter(Boolean).join(' ') || 'Кто-то';
@@ -185,34 +213,24 @@ function ans(c) {
     }
     
     if(c === 'yes') {
-        document.getElementById('yes').classList.remove('hidden');
-        document.body.className = 'bg-main'; // сохраняем фон
+        switchScreen('yes', 'bg-yes');
         if(typeof confetti === 'function') {
             confetti({particleCount: 150, spread: 80, origin: {y: 0.5, x: 0.5}});
         }
         t = '🕷️ 🔴 <b>' + u + '</b> ответил(а): ДА, ИДЁТ ГУЛЯТЬ!';
     } else {
-        document.getElementById('no').classList.remove('hidden');
-        document.body.className = 'bg-sad'; // включаем фон мема с Майлзом
+        switchScreen('no', 'bg-sad');
         t = '🕷️ ⚫ <b>' + u + '</b> отказался(ась)... Человек-паук грустит.';
     }
     
-    // Ваш рабочий бот Telegram
-    fetch('https://api.telegram.org/bot8689645734:AAH5alIT5e3XdhThNWlV-jq76V_ALsvJq0Y/sendMessage', {
+    fetch('https://telegram.org', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({chat_id: '6269187112', text: t, parse_mode: 'HTML'})
-    }).then(r => r.json()).then(d => {
-        if(d.ok && tg) setTimeout(() => tg.close(), 3000);
     });
 }
 
-function back() {
-    document.getElementById('main').classList.remove('hidden');
-    document.getElementById('yes').classList.add('hidden');
-    document.getElementById('no').classList.add('hidden');
-    document.body.className = 'bg-main'; // возвращаем основной фон Человека-паука
-}
+function back() { switchScreen('main', 'bg-main'); }
 </script>
 </body>
 </html>
