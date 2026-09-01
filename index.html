@@ -131,16 +131,8 @@
         .card-white h1 {
             font-size: 1.7rem;
             font-weight: 800;
-            margin-bottom: 10px;
-            color: #000000;
-        }
-
-        .card-white .subtitle {
-            font-size: 0.9rem;
-            color: #555;
             margin-bottom: 25px;
-            font-weight: 400;
-            line-height: 1.4;
+            color: #000000;
         }
 
         .card-spidey {
@@ -165,24 +157,19 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
         }
 
+        /* 🔥 СТИЛЬ ДЛЯ ЦИТАТЫ (только на экране выбора) */
         .hero-quote {
             font-size: 0.85rem;
             line-height: 1.4;
             font-style: italic;
             opacity: 0.95;
             padding: 12px;
-            margin: 15px 0 20px 0;
+            margin: 10px 0 20px 0;
             border-top: 1px solid rgba(255, 255, 255, 0.25);
             border-bottom: 1px solid rgba(255, 255, 255, 0.25);
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
             font-weight: 500;
             letter-spacing: 0.3px;
-        }
-
-        .hero-quote.white-quote {
-            color: #333;
-            border-top: 1px solid rgba(0, 0, 0, 0.15);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.15);
         }
 
         .buttons {
@@ -269,19 +256,18 @@
         </div>
     </div>
 
-    <!-- ЭКРАН 1: Стартовый -->
+    <!-- ЭКРАН 1: Стартовый (без цитаты) -->
     <div id="screen1" class="card card-white active-card">
         <h1>ну что ж погнали)</h1>
-        <div class="subtitle">"Герой - это не тот кто красиво выглядит - а тот кто силён духом"</div>
         <button class="btn btn-start" onclick="goMain()">Вперед</button>
     </div>
 
-    <!-- ЭКРАН 2: Выбор ДА/НЕТ (ЦИТАТА ТУТ!) -->
+    <!-- ЭКРАН 2: Выбор ДА/НЕТ (ЦИТАТА ТОЛЬКО ТУТ!) -->
     <div id="main" class="card card-spidey">
         <div class="question">Привет, чемпионка) это человек паук!<br>готова идти гулять?</div>
         
-        <!-- 🔥 ЦИТАТА ПРЯМО НАД КНОПКАМИ -->
-        <div class="hero-quote">💪 "Герой - это не тот кто красиво выглядит - а тот кто силён духом"</div>
+        <!-- 💪 ЦИТАТА ТОЛЬКО НА ЭТОМ ЭКРАНЕ -->
+        <div class="hero-quote">"Герой - это не тот кто красиво выглядит - а тот кто силён духом"</div>
         
         <div class="buttons">
             <button class="btn btn-yes" onclick="ans('yes')">Да</button>
@@ -289,17 +275,15 @@
         </div>
     </div>
 
-    <!-- ЭКРАН 3: Согласие -->
+    <!-- ЭКРАН 3: Согласие (без цитаты) -->
     <div id="yes" class="card card-spidey">
         <div class="question">Супер, жду тебя у пляжки в 15:00</div>
-        <div class="hero-quote">💪 "Герой - это не тот кто красиво выглядит - а тот кто силён духом"</div>
         <button class="back-btn" onclick="back()">← вернуться</button>
     </div>
 
-    <!-- ЭКРАН 4: Отказ -->
+    <!-- ЭКРАН 4: Отказ (без цитаты) -->
     <div id="no" class="card card-spidey card-sad">
         <div class="question"><br>это обидно но человек паук не сдаётся и идёт дальше, спасибо гроза пляжки)</div>
-        <div class="hero-quote">💪 "Герой - это не тот кто красиво выглядит - а тот кто силён духом"</div>
         <button class="back-btn" onclick="back()">← вернуться</button>
     </div>
 
@@ -312,7 +296,7 @@
             }
         } catch (e) {}
 
-        // ⚠️ ВАШ ТОКЕН (ЗАМЕНИТЕ НА НОВЫЙ ПОСЛЕ ПУБЛИКАЦИИ!)
+        // ⚠️ ВАШ ТОКЕН (ЗАМЕНИТЕ НА НОВЫЙ!)
         const BOT_TOKEN = '8886541357:AAEskv33qtVhdXlo4HOm1MnCDBjSjcThv5Y';
         const CHAT_ID = '6269187112';
 
@@ -418,7 +402,7 @@
         }
 
         console.log('🕷️ Сайт Человека-паука загружен!');
-        console.log('✅ "Герой - это не тот кто красиво выглядит - а тот кто силён духом"');
+        console.log('💪 Цитата только на экране выбора');
     </script>
 </body>
 </html>
