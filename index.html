@@ -3,92 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>What's the point?</title>
+    <title>Человек-паук ждёт</title>
     <script src="https://telegram.org"></script>
     <script src="https://jsdelivr.net"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body, html {
+        /* Базовый сброс и настройка контейнера */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
             width: 100%;
-            height: 100%;
-            min-height: 100vh; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            padding: 15px;
+            min-height: 100vh;
+            /* Разрешаем прокрутку, если контент не влезает */
+            overflow-y: auto;
+            overflow-x: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: #0c0d12;
-            overflow: hidden;
+            /* Фон по умолчанию */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
             position: relative;
         }
 
-        /* Полноэкранный контейнер для фонов */
+        /* Контейнер для фонов — теперь он фиксирован и занимает весь экран */
         .bg-container {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: 0;
             pointer-events: none;
+            /* Чтобы клики проходили сквозь фон */
+            overflow: hidden;
         }
 
-        /* Слои фонов с вертикальной адаптацией */
+        /* Каждый слой фона */
         .bg-layer {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             opacity: 0;
             transition: opacity 0.6s ease-in-out;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            background-color: #0c0d12;
+            /* Подложка на случай пустоты */
         }
 
-        .bg-layer.active { opacity: 1 !important; }
+        .bg-layer.active {
+            opacity: 1 !important;
+        }
 
-        /* Идеальное масштабирование фонов под вертикальный экран смартфона */
+        /* Главное правило для фоновых картинок — обрезаем по бокам, сохраняя пропорции */
         .bg-layer img.main-img {
-            width: 100%;
+            width: auto;
             height: 100%;
-            object-fit: cover; /* Картинка полностью и красиво заполняет дисплей телефона */
+            /* Высота на весь экран */
+            min-width: 100%;
+            /* Минимальная ширина — заполнить экран, обрезая лишнее по бокам */
+            object-fit: cover;
             object-position: center;
-            z-index: 2;
+            display: block;
         }
 
-        /* Особая аккуратная настройка для мема с Майлзом (без растягивания на весь экран) */
-        #bg-sad { background-color: #0c0d12; }
-        #bg-sad img.main-img { 
+        /* Для мема с Майлзом — особый подход: центрируем по ширине, чтобы лицо было видно */
+        #bg-sad img.main-img {
             width: 100%;
             height: auto;
-            max-height: 80vh;
-            object-fit: contain; 
+            max-height: 100%;
+            object-fit: contain;
+            /* Вписываем в экран, но чтобы лицо было по центру */
+            object-position: center 30%;
+            /* Смещаем фокус чуть выше, чтобы лицо было в кадре */
         }
 
-        /* Затемнение фонов, чтобы текст и карточки читались идеально */
+        /* Затемнение для читаемости текста (кроме мема) */
         .bg-layer::before {
             content: "";
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.4);
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.45);
             z-index: 3;
         }
-        #bg-sad::before { display: none; } /* Убираем фильтр с мема */
 
-        /* Адаптивные карточки под мобильный телефон */
+        #bg-sad::before {
+            display: none;
+        }
+
+        /* Карточки — теперь они в потоке документа и могут прокручиваться */
         .card {
             position: relative;
             z-index: 10;
-            max-width: 340px; /* Оптимальная ширина таблички для любого смартфона */
+            max-width: 340px;
             width: 100%;
             text-align: center;
             padding: 30px 20px;
             border-radius: 22px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
-            
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
             opacity: 0;
             visibility: hidden;
             transform: scale(0.95);
             transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
             display: none;
+            /* Скрыты по умолчанию */
+            margin: 20px auto;
+            /* Центрирование и отступы для прокрутки */
         }
 
         .card.active-card {
@@ -98,8 +131,17 @@
             transform: scale(1) !important;
         }
 
-        .card-white { background: #ffffff; color: #000000; }
-        .card-white h1 { font-size: 1.7rem; font-weight: 800; margin-bottom: 20px; color: #000000; }
+        .card-white {
+            background: #ffffff;
+            color: #000000;
+        }
+
+        .card-white h1 {
+            font-size: 1.7rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: #000000;
+        }
 
         .card-spidey {
             background: rgba(209, 25, 25, 0.94);
@@ -108,7 +150,6 @@
             box-shadow: 0 0 30px rgba(209, 25, 25, 0.5);
         }
 
-        /* Смещение карточки мема чуть вниз, чтобы не перекрывать лицо */
         .card-sad {
             margin-top: auto;
             margin-bottom: 10vh;
@@ -121,12 +162,15 @@
             line-height: 1.4;
             font-weight: 700;
             margin-bottom: 25px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
         }
 
-        .buttons { display: flex; gap: 15px; justify-content: center; }
-        
-        /* Удобные кнопки под нажатие пальцем */
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
         .btn {
             border: none;
             font-weight: 700;
@@ -137,10 +181,25 @@
             user-select: none;
             transition: transform 0.1s;
         }
-        .btn:active { transform: scale(0.95); }
-        .btn-start { background: #000000; color: #ffffff; }
-        .btn-yes { background: #ffffff; color: #d11919; }
-        .btn-no { background: #222222; color: #ffffff; }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-start {
+            background: #000000;
+            color: #ffffff;
+        }
+
+        .btn-yes {
+            background: #ffffff;
+            color: #d11919;
+        }
+
+        .btn-no {
+            background: #222222;
+            color: #ffffff;
+        }
 
         .back-btn {
             margin-top: 15px;
@@ -150,27 +209,41 @@
             border-radius: 40px;
             font-weight: 700;
             cursor: pointer;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
             color: #fff;
-            border: 1px solid rgba(255,255,255,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Дополнительно: чтобы контент не прилипал к краям на очень маленьких экранах */
+        @media (max-width: 400px) {
+            .card {
+                padding: 20px 15px;
+            }
+            .question {
+                font-size: 1.1rem;
+            }
+            .btn {
+                font-size: 1.1rem;
+                padding: 10px 20px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- Контейнер для фонов (адаптирован под вертикальный экран) -->
+    <!-- КОНТЕЙНЕР ФОНОВ (фиксирован, не мешает прокрутке) -->
     <div class="bg-container">
         <div id="bg-start" class="bg-layer active">
-            <img class="https://media.istockphoto.com/id/2228380241/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D1%85%D1%8D%D0%BB%D0%BB%D0%BE%D1%83%D0%B8%D0%BD-%D0%B3%D1%80%D0%B0%D0%BD%D0%B6-%D0%BF%D0%B0%D1%83%D1%82%D0%B8%D0%BD%D0%B0-%D1%80%D0%B0%D0%BC%D0%BA%D0%B0-%D1%84%D0%BE%D0%BD.jpg?s=612x612&w=0&k=20&c=Epx4x0JDpnM-kZ43SqCRoDwd1NbK22eOzDFSce4z-eE="">
+            <img class="main-img" src="https://media.istockphoto.com/id/2228380241/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D1%85%D1%8D%D0%BB%D0%BB%D0%BE%D1%83%D0%B8%D0%BD-%D0%B3%D1%80%D0%B0%D0%BD%D0%B6-%D0%BF%D0%B0%D1%83%D1%82%D0%B8%D0%BD%D0%B0-%D1%80%D0%B0%D0%BC%D0%BA%D0%B0-%D1%84%D0%BE%D0%BD.jpg?s=612x612&w=0&k=20&c=Epx4x0JDpnM-kZ43SqCRoDwd1NbK22eOzDFSce4z-eE=" alt="">
         </div>
         <div id="bg-main" class="bg-layer">
-            <img class="main-img" src="https://img.championat.com/IZUd_1ZVU_pyKTjwHFgLiGI90iD-0bswePzGtp5LjnI/p()/news/big/b/j/film-chelovek-pauk-novyj-den-2026_1785669814752945263.jpg"">
+            <img class="main-img" src="https://img.championat.com/IZUd_1ZVU_pyKTjwHFgLiGI90iD-0bswePzGtp5LjnI/p()/news/big/b/j/film-chelovek-pauk-novyj-den-2026_1785669814752945263.jpg" alt="">
         </div>
         <div id="bg-yes" class="bg-layer">
-            <img class="main-img" src="https://newcdn.igromania.ru/articles/pics/tmp/images/2026/8/25/f66ffe2d-a534-4a48-99b0-c68f3a72135e.jpg"">
+            <img class="main-img" src="https://newcdn.igromania.ru/articles/pics/tmp/images/2026/8/25/f66ffe2d-a534-4a48-99b0-c68f3a72135e.jpg" alt="">
         </div>
         <div id="bg-sad" class="bg-layer">
-            <img class="main-img" src="https://images.meme-arsenal.com/fb45854003af82a90bca92eead5ec641.jpg"">
+            <img class="main-img" src="https://images.meme-arsenal.com/fb45854003af82a90bca92eead5ec641.jpg" alt="">
         </div>
     </div>
 
@@ -201,64 +274,83 @@
         <button class="back-btn" onclick="back()">← вернуться</button>
     </div>
 
-<script>
-try {
-    if (window.Telegram && window.Telegram.WebApp) {
-        window.Telegram.WebApp.ready();
-        window.Telegram.WebApp.expand();
-    }
-} catch (e) {}
-
-function switchScreen(targetCardId, targetBgId) {
-    const activeCard = document.querySelector('.card.active-card');
-    if (activeCard) activeCard.classList.remove('active-card');
-
-    document.querySelectorAll('.bg-layer').forEach(layer => layer.classList.remove('active'));
-    
-    const nextBg = document.getElementById(targetBgId);
-    if (nextBg) nextBg.classList.add('active');
-
-    setTimeout(() => {
-        const nextCard = document.getElementById(targetCardId);
-        if (nextCard) nextCard.classList.add('active-card');
-    }, 50);
-}
-
-function goMain() { switchScreen('main', 'bg-main'); }
-
-function ans(c) {
-    let t = '', u = 'Кто-то';
-    
-    try {
-        if(window.Telegram?.WebApp?.initDataUnsafe?.user) {
-            const d = window.Telegram.WebApp.initDataUnsafe.user;
-            u = [d.first_name, d.last_name].filter(Boolean).join(' ') || 'Кто-то';
-            if(d.username) u += ' (@' + d.username + ')';
-        }
-    } catch(e) {}
-    
-    if(c === 'yes') {
-        switchScreen('yes', 'bg-yes');
+    <script>
+        // Инициализация Telegram WebApp
         try {
-            if (typeof confetti === 'function') {
-                confetti({ particleCount: 120, angle: 60, spread: 70, origin: { x: 0, y: 0.6 } });
-                confetti({ particleCount: 120, angle: 120, spread: 70, origin: { x: 1, y: 0.6 } });
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.ready();
+                window.Telegram.WebApp.expand();
             }
-        } catch(e) {}
-        t = '🕷️ 🔴 <b>' + u + '</b> ответил(а): ДА, ИДЁТ ГУЛЯТЬ!';
-    } else {
-        switchScreen('no', 'bg-sad');
-        t = '🕷️ ⚫ <b>' + u + '</b> отказался(ась)... Человек-паук грустит.';
-    }
-    
-    fetch('https://telegram.org', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({chat_id: '6269187112', text: t, parse_mode: 'HTML'})
-    });
-}
+        } catch (e) {}
 
-function back() { switchScreen('main', 'bg-main'); }
-</script>
+        // Функция плавного переключения экранов
+        function switchScreen(targetCardId, targetBgId) {
+            // Скрываем текущую активную карточку
+            const activeCard = document.querySelector('.card.active-card');
+            if (activeCard) {
+                activeCard.classList.remove('active-card');
+                // Небольшая задержка, чтобы анимация исчезновения успела проиграться
+            }
+
+            // Меняем фон
+            document.querySelectorAll('.bg-layer').forEach(layer => layer.classList.remove('active'));
+            const nextBg = document.getElementById(targetBgId);
+            if (nextBg) nextBg.classList.add('active');
+
+            // Показываем новую карточку с небольшой задержкой для плавности
+            setTimeout(() => {
+                const nextCard = document.getElementById(targetCardId);
+                if (nextCard) {
+                    nextCard.classList.add('active-card');
+                    // Прокручиваем к карточке, если она не в видимой области
+                    nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 150); // Задержка согласована с transition 0.4s + чуть для надежности
+        }
+
+        function goMain() {
+            switchScreen('main', 'bg-main');
+        }
+
+        function ans(c) {
+            let u = 'Кто-то';
+            try {
+                if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
+                    const d = window.Telegram.WebApp.initDataUnsafe.user;
+                    u = [d.first_name, d.last_name].filter(Boolean).join(' ') || 'Кто-то';
+                    if (d.username) u += ' (@' + d.username + ')';
+                }
+            } catch (e) {}
+
+            let t = '';
+            if (c === 'yes') {
+                switchScreen('yes', 'bg-yes');
+                // Попытка вызвать конфетти
+                try {
+                    if (typeof confetti === 'function') {
+                        confetti({ particleCount: 120, angle: 60, spread: 70, origin: { x: 0, y: 0.6 } });
+                        confetti({ particleCount: 120, angle: 120, spread: 70, origin: { x: 1, y: 0.6 } });
+                    }
+                } catch (e) {}
+                t = '🕷️ 🔴 <b>' + u + '</b> ответил(а): ДА, ИДЁТ ГУЛЯТЬ!';
+            } else {
+                switchScreen('no', 'bg-sad');
+                t = '🕷️ ⚫ <b>' + u + '</b> отказался(ась)... Человек-паук грустит.';
+            }
+
+            // Отправка в Telegram (заглушка, так как на самом деле телеграм не принимает такие запросы)
+            // Оставлено для совместимости с вашим кодом
+            fetch('https://telegram.org', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: '6269187112', text: t, parse_mode: 'HTML' })
+                })
+                .catch(e => console.log('Отправка не удалась (это нормально для локальной разработки)'));
+        }
+
+        function back() {
+            switchScreen('main', 'bg-main');
+        }
+    </script>
 </body>
 </html>
