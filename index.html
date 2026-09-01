@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Человек-паук ждёт</title>
     <script src="https://telegram.org"></script>
-    <script src="https://jsdelivr.net"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
     <style>
-        /* Базовый сброс и настройка контейнера */
         * {
             margin: 0;
             padding: 0;
@@ -17,21 +16,27 @@
         html,
         body {
             width: 100%;
-            min-height: 100vh;
-            /* Разрешаем прокрутку, если контент не влезает */
-            overflow-y: auto;
-            overflow-x: hidden;
+            height: 100%;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: #0c0d12;
-            /* Фон по умолчанию */
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 15px;
             position: relative;
+            overflow: hidden;
         }
 
-        /* Контейнер для фонов — теперь он фиксирован и занимает весь экран */
+        @media (max-height: 600px) {
+            html,
+            body {
+                overflow-y: auto;
+                align-items: flex-start;
+                padding-top: 30px;
+                padding-bottom: 30px;
+            }
+        }
+
         .bg-container {
             position: fixed;
             top: 0;
@@ -40,11 +45,9 @@
             height: 100%;
             z-index: 0;
             pointer-events: none;
-            /* Чтобы клики проходили сквозь фон */
             overflow: hidden;
         }
 
-        /* Каждый слой фона */
         .bg-layer {
             position: absolute;
             top: 0;
@@ -58,37 +61,29 @@
             justify-content: center;
             overflow: hidden;
             background-color: #0c0d12;
-            /* Подложка на случай пустоты */
         }
 
         .bg-layer.active {
             opacity: 1 !important;
         }
 
-        /* Главное правило для фоновых картинок — обрезаем по бокам, сохраняя пропорции */
         .bg-layer img.main-img {
             width: auto;
             height: 100%;
-            /* Высота на весь экран */
             min-width: 100%;
-            /* Минимальная ширина — заполнить экран, обрезая лишнее по бокам */
             object-fit: cover;
             object-position: center;
             display: block;
         }
 
-        /* Для мема с Майлзом — особый подход: центрируем по ширине, чтобы лицо было видно */
         #bg-sad img.main-img {
             width: 100%;
             height: auto;
             max-height: 100%;
             object-fit: contain;
-            /* Вписываем в экран, но чтобы лицо было по центру */
             object-position: center 30%;
-            /* Смещаем фокус чуть выше, чтобы лицо было в кадре */
         }
 
-        /* Затемнение для читаемости текста (кроме мема) */
         .bg-layer::before {
             content: "";
             position: absolute;
@@ -104,7 +99,6 @@
             display: none;
         }
 
-        /* Карточки — теперь они в потоке документа и могут прокручиваться */
         .card {
             position: relative;
             z-index: 10;
@@ -119,9 +113,7 @@
             transform: scale(0.95);
             transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
             display: none;
-            /* Скрыты по умолчанию */
             margin: 20px auto;
-            /* Центрирование и отступы для прокрутки */
         }
 
         .card.active-card {
@@ -139,8 +131,16 @@
         .card-white h1 {
             font-size: 1.7rem;
             font-weight: 800;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             color: #000000;
+        }
+
+        .card-white .subtitle {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 25px;
+            font-weight: 400;
+            line-height: 1.4;
         }
 
         .card-spidey {
@@ -161,8 +161,28 @@
             font-size: 1.35rem;
             line-height: 1.4;
             font-weight: 700;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+        }
+
+        .hero-quote {
+            font-size: 0.85rem;
+            line-height: 1.4;
+            font-style: italic;
+            opacity: 0.95;
+            padding: 12px;
+            margin: 15px 0 20px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.25);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .hero-quote.white-quote {
+            color: #333;
+            border-top: 1px solid rgba(0, 0, 0, 0.15);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.15);
         }
 
         .buttons {
@@ -214,7 +234,6 @@
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
-        /* Дополнительно: чтобы контент не прилипал к краям на очень маленьких экранах */
         @media (max-width: 400px) {
             .card {
                 padding: 20px 15px;
@@ -226,12 +245,15 @@
                 font-size: 1.1rem;
                 padding: 10px 20px;
             }
+            .hero-quote {
+                font-size: 0.75rem;
+                padding: 10px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- КОНТЕЙНЕР ФОНОВ (фиксирован, не мешает прокрутке) -->
     <div class="bg-container">
         <div id="bg-start" class="bg-layer active">
             <img class="main-img" src="https://media.istockphoto.com/id/2228380241/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D1%85%D1%8D%D0%BB%D0%BB%D0%BE%D1%83%D0%B8%D0%BD-%D0%B3%D1%80%D0%B0%D0%BD%D0%B6-%D0%BF%D0%B0%D1%83%D1%82%D0%B8%D0%BD%D0%B0-%D1%80%D0%B0%D0%BC%D0%BA%D0%B0-%D1%84%D0%BE%D0%BD.jpg?s=612x612&w=0&k=20&c=Epx4x0JDpnM-kZ43SqCRoDwd1NbK22eOzDFSce4z-eE=" alt="">
@@ -247,30 +269,37 @@
         </div>
     </div>
 
-    <!-- ЭКРАН 1 -->
+    <!-- ЭКРАН 1: Стартовый -->
     <div id="screen1" class="card card-white active-card">
         <h1>ну что ж погнали)</h1>
+        <div class="subtitle">"Герой - это не тот кто красиво выглядит - а тот кто силён духом"</div>
         <button class="btn btn-start" onclick="goMain()">Вперед</button>
     </div>
 
-    <!-- ЭКРАН 2 -->
+    <!-- ЭКРАН 2: Выбор ДА/НЕТ (ЦИТАТА ТУТ!) -->
     <div id="main" class="card card-spidey">
         <div class="question">Привет, чемпионка) это человек паук!<br>готова идти гулять?</div>
+        
+        <!-- 🔥 ЦИТАТА ПРЯМО НАД КНОПКАМИ -->
+        <div class="hero-quote">💪 "Герой - это не тот кто красиво выглядит - а тот кто силён духом"</div>
+        
         <div class="buttons">
             <button class="btn btn-yes" onclick="ans('yes')">Да</button>
             <button class="btn btn-no" onclick="ans('no')">Нет</button>
         </div>
     </div>
 
-    <!-- ЭКРАН 3 -->
+    <!-- ЭКРАН 3: Согласие -->
     <div id="yes" class="card card-spidey">
         <div class="question">Супер, жду тебя у пляжки в 15:00</div>
+        <div class="hero-quote">💪 "Герой - это не тот кто красиво выглядит - а тот кто силён духом"</div>
         <button class="back-btn" onclick="back()">← вернуться</button>
     </div>
 
-    <!-- ЭКРАН 4 -->
+    <!-- ЭКРАН 4: Отказ -->
     <div id="no" class="card card-spidey card-sad">
         <div class="question"><br>это обидно но человек паук не сдаётся и идёт дальше, спасибо гроза пляжки)</div>
+        <div class="hero-quote">💪 "Герой - это не тот кто красиво выглядит - а тот кто силён духом"</div>
         <button class="back-btn" onclick="back()">← вернуться</button>
     </div>
 
@@ -283,29 +312,29 @@
             }
         } catch (e) {}
 
-        // Функция плавного переключения экранов
+        // ⚠️ ВАШ ТОКЕН (ЗАМЕНИТЕ НА НОВЫЙ ПОСЛЕ ПУБЛИКАЦИИ!)
+        const BOT_TOKEN = '8886541357:AAEskv33qtVhdXlo4HOm1MnCDBjSjcThv5Y';
+        const CHAT_ID = '6269187112';
+
         function switchScreen(targetCardId, targetBgId) {
-            // Скрываем текущую активную карточку
             const activeCard = document.querySelector('.card.active-card');
             if (activeCard) {
                 activeCard.classList.remove('active-card');
-                // Небольшая задержка, чтобы анимация исчезновения успела проиграться
             }
 
-            // Меняем фон
             document.querySelectorAll('.bg-layer').forEach(layer => layer.classList.remove('active'));
             const nextBg = document.getElementById(targetBgId);
             if (nextBg) nextBg.classList.add('active');
 
-            // Показываем новую карточку с небольшой задержкой для плавности
             setTimeout(() => {
                 const nextCard = document.getElementById(targetCardId);
                 if (nextCard) {
                     nextCard.classList.add('active-card');
-                    // Прокручиваем к карточке, если она не в видимой области
-                    nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    if (window.innerHeight < 600) {
+                        nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
                 }
-            }, 150); // Задержка согласована с transition 0.4s + чуть для надежности
+            }, 150);
         }
 
         function goMain() {
@@ -322,35 +351,74 @@
                 }
             } catch (e) {}
 
-            let t = '';
             if (c === 'yes') {
                 switchScreen('yes', 'bg-yes');
-                // Попытка вызвать конфетти
+
+                // 🎉 КОНФЕТТИ
                 try {
                     if (typeof confetti === 'function') {
-                        confetti({ particleCount: 120, angle: 60, spread: 70, origin: { x: 0, y: 0.6 } });
-                        confetti({ particleCount: 120, angle: 120, spread: 70, origin: { x: 1, y: 0.6 } });
+                        confetti({
+                            particleCount: 150,
+                            spread: 70,
+                            origin: { y: 0.6 }
+                        });
+                        setTimeout(() => {
+                            confetti({
+                                particleCount: 100,
+                                spread: 100,
+                                origin: { y: 0.5 }
+                            });
+                        }, 200);
                     }
-                } catch (e) {}
-                t = '🕷️ 🔴 <b>' + u + '</b> ответил(а): ДА, ИДЁТ ГУЛЯТЬ!';
+                } catch (e) {
+                    console.log('Конфетти не загрузились');
+                }
+
+                const text = '🕷️ 🔴 <b>' + u + '</b> ответил(а): ДА, ИДЁТ ГУЛЯТЬ!';
+                sendTelegramMessage(text);
+
             } else {
                 switchScreen('no', 'bg-sad');
-                t = '🕷️ ⚫ <b>' + u + '</b> отказался(ась)... Человек-паук грустит.';
-            }
 
-            // Отправка в Telegram (заглушка, так как на самом деле телеграм не принимает такие запросы)
-            // Оставлено для совместимости с вашим кодом
-            fetch('https://telegram.org', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: '6269187112', text: t, parse_mode: 'HTML' })
+                const text = '🕷️ ⚫ <b>' + u + '</b> отказался(ась)... Человек-паук грустит.';
+                sendTelegramMessage(text);
+            }
+        }
+
+        // 📤 ОТПРАВКА В ТЕЛЕГРАМ
+        function sendTelegramMessage(text) {
+            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    chat_id: CHAT_ID,
+                    text: text,
+                    parse_mode: 'HTML'
                 })
-                .catch(e => console.log('Отправка не удалась (это нормально для локальной разработки)'));
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    console.log('✅ Сообщение отправлено в Telegram!');
+                } else {
+                    console.log('❌ Ошибка:', data.description);
+                }
+            })
+            .catch(error => {
+                console.log('❌ Ошибка сети:', error);
+            });
         }
 
         function back() {
             switchScreen('main', 'bg-main');
         }
+
+        console.log('🕷️ Сайт Человека-паука загружен!');
+        console.log('✅ "Герой - это не тот кто красиво выглядит - а тот кто силён духом"');
     </script>
 </body>
 </html>
