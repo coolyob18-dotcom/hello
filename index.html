@@ -99,7 +99,36 @@
             display: none;
         }
 
-        /* 🔥 ВСЕ КАРТОЧКИ СТРОГО ПО ЦЕНТРУ */
+        /* 🔥 КНОПКА СМЕНЫ ЯЗЫКА */
+        .lang-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            padding: 8px 16px;
+            color: #fff;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .lang-toggle:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
+        }
+
+        .lang-toggle:active {
+            transform: scale(0.95);
+        }
+
+        /* ВСЕ КАРТОЧКИ СТРОГО ПО ЦЕНТРУ */
         .card {
             position: relative;
             z-index: 10;
@@ -115,7 +144,6 @@
             transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
             display: none;
             margin: auto;
-            /* 🔥 Центрирование по вертикали и горизонтали */
             position: absolute;
             top: 50%;
             left: 50%;
@@ -148,7 +176,6 @@
             box-shadow: 0 0 30px rgba(209, 25, 25, 0.5);
         }
 
-        /* 🔥 УБРАЛ ОТСТУПЫ, ТЕПЕРЬ ВСЕ КАРТОЧКИ ОДИНАКОВО ПО ЦЕНТРУ */
         .card-sad {
             background: rgba(0, 0, 0, 0.88);
             border: 3.5px solid #e21b1b;
@@ -281,9 +308,15 @@
             .dialog-line {
                 font-size: 0.85rem;
             }
+            .lang-toggle {
+                top: 10px;
+                right: 10px;
+                font-size: 0.7rem;
+                padding: 6px 12px;
+            }
         }
 
-        /* 🔥 ДЛЯ МАЛЕНЬКИХ ЭКРАНОВ - КАРТОЧКИ НЕ ПО ЦЕНТРУ, А СВЕРХУ С ПРОКРУТКОЙ */
+        /* ДЛЯ МАЛЕНЬКИХ ЭКРАНОВ - КАРТОЧКИ СВЕРХУ С ПРОКРУТКОЙ */
         @media (max-height: 600px) {
             html,
             body {
@@ -307,6 +340,9 @@
 </head>
 <body>
 
+    <!-- 🔥 КНОПКА СМЕНЫ ЯЗЫКА -->
+    <button class="lang-toggle" id="langBtn" onclick="toggleLang()">🇬🇧 EN</button>
+
     <div class="bg-container">
         <div id="bg-start" class="bg-layer active">
             <img class="main-img" src="https://media.istockphoto.com/id/2228380241/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D1%85%D1%8D%D0%BB%D0%BB%D0%BE%D1%83%D0%B8%D0%BD-%D0%B3%D1%80%D0%B0%D0%BD%D0%B6-%D0%BF%D0%B0%D1%83%D1%82%D0%B8%D0%BD%D0%B0-%D1%80%D0%B0%D0%BC%D0%BA%D0%B0-%D1%84%D0%BE%D0%BD.jpg?s=612x612&w=0&k=20&c=Epx4x0JDpnM-kZ43SqCRoDwd1NbK22eOzDFSce4z-eE=" alt="">
@@ -324,44 +360,102 @@
 
     <!-- ЭКРАН 1: Стартовый -->
     <div id="screen1" class="card card-white active-card">
-        <h1>ну что ж погнали)</h1>
-        <button class="btn btn-start" onclick="goMain()">Вперед</button>
+        <h1 id="startTitle">ну что ж погнали)</h1>
+        <button class="btn btn-start" id="startBtn" onclick="goMain()">Вперед</button>
     </div>
 
     <!-- ЭКРАН 2: Выбор ДА/НЕТ -->
     <div id="main" class="card card-spidey">
-        <div class="question">Привет, чемпионка) это человек паук!<br>готова идти гулять?</div>
-        <div class="hero-quote">"Герой - это не тот кто красиво выглядит - а тот кто силён духом"</div>
+        <div class="question" id="mainQuestion">Привет, чемпионка) это человек паук!<br>готова идти гулять?</div>
+        <div class="hero-quote" id="mainQuote">"Герой - это не тот кто красиво выглядит - а тот кто силён духом"</div>
         <div class="buttons">
-            <button class="btn btn-yes" onclick="ans('yes')">Да</button>
-            <button class="btn btn-no" onclick="ans('no')">Нет</button>
+            <button class="btn btn-yes" id="yesBtn" onclick="ans('yes')">Да</button>
+            <button class="btn btn-no" id="noBtn" onclick="ans('no')">Нет</button>
         </div>
     </div>
 
     <!-- ЭКРАН 3: Согласие -->
     <div id="yes" class="card card-spidey">
-        <div class="question">Супер, жду тебя у пляжки в 15:00</div>
-        <button class="back-btn" onclick="back()">← вернуться</button>
+        <div class="question" id="yesText">Супер, жду тебя у пляжки в 15:00</div>
+        <button class="back-btn" id="yesBack" onclick="back()">← вернуться</button>
     </div>
 
     <!-- ЭКРАН 4: Отказ -->
     <div id="no" class="card card-spidey card-sad">
-        <div class="question"><br>это обидно но человек паук не сдаётся и идёт дальше, спасибо гроза пляжки)</div>
+        <div class="question" id="noText"><br>это обидно но человек паук не сдаётся и идёт дальше, спасибо гроза пляжки)</div>
         <div class="dialog-box">
             <div class="dialog-line">
                 <span class="speaker kolobok">😉 Колобок:</span>
-                <span class="text">Колобок круче!</span>
+                <span class="text" id="dialogKolobok">Колобок круче!</span>
             </div>
             <div class="dialog-line">
                 <span class="speaker spidey">🕷️ Человек-паук:</span>
-                <span class="text">А вот и нет!</span>
+                <span class="text" id="dialogSpidey">А вот и нет!</span>
             </div>
         </div>
-        <button class="back-btn" onclick="back()">← вернуться</button>
+        <button class="back-btn" id="noBack" onclick="back()">← вернуться</button>
     </div>
 
     <script>
-        // Инициализация Telegram WebApp
+        // ========== ЯЗЫКИ ==========
+        const LANG = {
+            ru: {
+                langBtn: '🇬🇧 EN',
+                startTitle: 'ну что ж погнали)',
+                startBtn: 'Вперед',
+                mainQuestion: 'Привет, чемпионка) это человек паук!<br>готова идти гулять?',
+                mainQuote: '"Герой - это не тот кто красиво выглядит - а тот кто силён духом"',
+                yesBtn: 'Да',
+                noBtn: 'Нет',
+                yesText: 'Супер, жду тебя у пляжки в 15:00',
+                yesBack: '← вернуться',
+                noText: '<br>это обидно но человек паук не сдаётся и идёт дальше, спасибо гроза пляжки)',
+                noBack: '← вернуться',
+                dialogKolobok: 'Колобок круче!',
+                dialogSpidey: 'А вот и нет!'
+            },
+            en: {
+                langBtn: '🇷🇺 RU',
+                startTitle: 'well, let\'s go)',
+                startBtn: 'Go',
+                mainQuestion: 'Hi, champion) this is Spider-Man!<br>ready to go for a walk?',
+                mainQuote: '"A hero is not the one who looks good - but the one who is strong in spirit"',
+                yesBtn: 'Yes',
+                noBtn: 'No',
+                yesText: 'Awesome, I\'ll wait for you at the beach at 3:00 PM',
+                yesBack: '← back',
+                noText: '<br>it\'s sad but Spider-Man doesn\'t give up and moves on, thank you storm of the beach)',
+                noBack: '← back',
+                dialogKolobok: 'Kolobok is cooler!',
+                dialogSpidey: 'Oh no, it\'s not!'
+            }
+        };
+
+        let currentLang = 'ru';
+
+        function toggleLang() {
+            currentLang = currentLang === 'ru' ? 'en' : 'ru';
+            applyLanguage(currentLang);
+        }
+
+        function applyLanguage(lang) {
+            const t = LANG[lang];
+            document.getElementById('langBtn').textContent = t.langBtn;
+            document.getElementById('startTitle').textContent = t.startTitle;
+            document.getElementById('startBtn').textContent = t.startBtn;
+            document.getElementById('mainQuestion').innerHTML = t.mainQuestion;
+            document.getElementById('mainQuote').textContent = t.mainQuote;
+            document.getElementById('yesBtn').textContent = t.yesBtn;
+            document.getElementById('noBtn').textContent = t.noBtn;
+            document.getElementById('yesText').textContent = t.yesText;
+            document.getElementById('yesBack').textContent = t.yesBack;
+            document.getElementById('noText').innerHTML = t.noText;
+            document.getElementById('noBack').textContent = t.noBack;
+            document.getElementById('dialogKolobok').textContent = t.dialogKolobok;
+            document.getElementById('dialogSpidey').textContent = t.dialogSpidey;
+        }
+
+        // ========== ОСНОВНАЯ ЛОГИКА ==========
         try {
             if (window.Telegram && window.Telegram.WebApp) {
                 window.Telegram.WebApp.ready();
@@ -369,7 +463,6 @@
             }
         } catch (e) {}
 
-        // ⚠️ ВАШ ТОКЕН (ЗАМЕНИТЕ НА НОВЫЙ!)
         const BOT_TOKEN = '8886541357:AAEskv33qtVhdXlo4HOm1MnCDBjSjcThv5Y';
         const CHAT_ID = '6269187112';
 
@@ -442,27 +535,27 @@
             const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
 
             fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    chat_id: CHAT_ID,
-                    text: text,
-                    parse_mode: 'HTML'
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        chat_id: CHAT_ID,
+                        text: text,
+                        parse_mode: 'HTML'
+                    })
                 })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.ok) {
-                    console.log('✅ Сообщение отправлено в Telegram!');
-                } else {
-                    console.log('❌ Ошибка:', data.description);
-                }
-            })
-            .catch(error => {
-                console.log('❌ Ошибка сети:', error);
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ok) {
+                        console.log('✅ Сообщение отправлено в Telegram!');
+                    } else {
+                        console.log('❌ Ошибка:', data.description);
+                    }
+                })
+                .catch(error => {
+                    console.log('❌ Ошибка сети:', error);
+                });
         }
 
         function back() {
@@ -470,7 +563,7 @@
         }
 
         console.log('🕷️ Сайт Человека-паука загружен!');
-        console.log('✅ Все карточки по центру!');
+        console.log('🌍 Поддержка языков: русский / английский');
     </script>
 </body>
 </html>
