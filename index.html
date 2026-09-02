@@ -99,7 +99,6 @@
             display: none;
         }
 
-        /* 🔥 КНОПКА СМЕНЫ ЯЗЫКА */
         .lang-toggle {
             position: fixed;
             top: 20px;
@@ -128,7 +127,6 @@
             transform: scale(0.95);
         }
 
-        /* ВСЕ КАРТОЧКИ СТРОГО ПО ЦЕНТРУ */
         .card {
             position: relative;
             z-index: 10;
@@ -316,7 +314,6 @@
             }
         }
 
-        /* ДЛЯ МАЛЕНЬКИХ ЭКРАНОВ - КАРТОЧКИ СВЕРХУ С ПРОКРУТКОЙ */
         @media (max-height: 600px) {
             html,
             body {
@@ -340,7 +337,6 @@
 </head>
 <body>
 
-    <!-- 🔥 КНОПКА СМЕНЫ ЯЗЫКА -->
     <button class="lang-toggle" id="langBtn" onclick="toggleLang()">🇬🇧 EN</button>
 
     <div class="bg-container">
@@ -358,13 +354,13 @@
         </div>
     </div>
 
-    <!-- ЭКРАН 1: Стартовый -->
+    <!-- ЭКРАН 1 -->
     <div id="screen1" class="card card-white active-card">
         <h1 id="startTitle">ну что ж погнали)</h1>
         <button class="btn btn-start" id="startBtn" onclick="goMain()">Вперед</button>
     </div>
 
-    <!-- ЭКРАН 2: Выбор ДА/НЕТ -->
+    <!-- ЭКРАН 2 -->
     <div id="main" class="card card-spidey">
         <div class="question" id="mainQuestion">Привет, чемпионка) это человек паук!<br>готова идти гулять?</div>
         <div class="hero-quote" id="mainQuote">"Герой - это не тот кто красиво выглядит - а тот кто силён духом"</div>
@@ -374,22 +370,26 @@
         </div>
     </div>
 
-    <!-- ЭКРАН 3: Согласие -->
+    <!-- ЭКРАН 3 -->
     <div id="yes" class="card card-spidey">
         <div class="question" id="yesText">Супер, жду тебя у пляжки в 15:00</div>
         <button class="back-btn" id="yesBack" onclick="back()">← вернуться</button>
     </div>
 
-    <!-- ЭКРАН 4: Отказ -->
+    <!-- ЭКРАН 4 -->
     <div id="no" class="card card-spidey card-sad">
         <div class="question" id="noText"><br>это обидно но человек паук не сдаётся и идёт дальше, спасибо гроза пляжки)</div>
         <div class="dialog-box">
             <div class="dialog-line">
-                <span class="speaker kolobok" id="dialogSpeaker1">😉 Колобок:</span>
+                <span class="speaker kolobok">
+                    <span id="dialogSpeaker1">😉 Колобок:</span>
+                </span>
                 <span class="text" id="dialogText1">Колобок круче!</span>
             </div>
             <div class="dialog-line">
-                <span class="speaker spidey" id="dialogSpeaker2">🕷️ Человек-паук:</span>
+                <span class="speaker spidey">
+                    <span id="dialogSpeaker2">🕷️ Человек-паук:</span>
+                </span>
                 <span class="text" id="dialogText2">А вот и нет!</span>
             </div>
         </div>
