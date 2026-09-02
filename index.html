@@ -385,12 +385,12 @@
         <div class="question" id="noText"><br>это обидно но человек паук не сдаётся и идёт дальше, спасибо гроза пляжки)</div>
         <div class="dialog-box">
             <div class="dialog-line">
-                <span class="speaker kolobok">😉 Колобок:</span>
-                <span class="text" id="dialogKolobok">Колобок круче!</span>
+                <span class="speaker kolobok" id="dialogSpeaker1">😉 Колобок:</span>
+                <span class="text" id="dialogText1">Колобок круче!</span>
             </div>
             <div class="dialog-line">
-                <span class="speaker spidey">🕷️ Человек-паук:</span>
-                <span class="text" id="dialogSpidey">А вот и нет!</span>
+                <span class="speaker spidey" id="dialogSpeaker2">🕷️ Человек-паук:</span>
+                <span class="text" id="dialogText2">А вот и нет!</span>
             </div>
         </div>
         <button class="back-btn" id="noBack" onclick="back()">← вернуться</button>
@@ -411,8 +411,10 @@
                 yesBack: '← вернуться',
                 noText: '<br>это обидно но человек паук не сдаётся и идёт дальше, спасибо гроза пляжки)',
                 noBack: '← вернуться',
-                dialogKolobok: 'Колобок круче!',
-                dialogSpidey: 'А вот и нет!'
+                dialogSpeaker1: '😉 Колобок:',
+                dialogText1: 'Колобок круче!',
+                dialogSpeaker2: '🕷️ Человек-паук:',
+                dialogText2: 'А вот и нет!'
             },
             en: {
                 langBtn: '🇷🇺 RU',
@@ -426,8 +428,10 @@
                 yesBack: '← back',
                 noText: '<br>it\'s sad but Spider-Man doesn\'t give up and moves on, thank you storm of the beach)',
                 noBack: '← back',
-                dialogKolobok: 'Kolobok is cooler!',
-                dialogSpidey: 'Oh no, it\'s not!'
+                dialogSpeaker1: '😉 Kolobok:',
+                dialogText1: 'Kolobok is cooler!',
+                dialogSpeaker2: '🕷️ Spider-Man:',
+                dialogText2: 'Oh no, it\'s not!'
             }
         };
 
@@ -451,8 +455,10 @@
             document.getElementById('yesBack').textContent = t.yesBack;
             document.getElementById('noText').innerHTML = t.noText;
             document.getElementById('noBack').textContent = t.noBack;
-            document.getElementById('dialogKolobok').textContent = t.dialogKolobok;
-            document.getElementById('dialogSpidey').textContent = t.dialogSpidey;
+            document.getElementById('dialogSpeaker1').textContent = t.dialogSpeaker1;
+            document.getElementById('dialogText1').textContent = t.dialogText1;
+            document.getElementById('dialogSpeaker2').textContent = t.dialogSpeaker2;
+            document.getElementById('dialogText2').textContent = t.dialogText2;
         }
 
         // ========== ОСНОВНАЯ ЛОГИКА ==========
