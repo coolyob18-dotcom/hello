@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>What's the point?</title>
+    <title>Человек-паук ждёт</title>
     <script src="https://telegram.org"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
     <style>
@@ -99,6 +99,7 @@
             display: none;
         }
 
+        /* 🔥 ВСЕ КАРТОЧКИ СТРОГО ПО ЦЕНТРУ */
         .card {
             position: relative;
             z-index: 10;
@@ -113,14 +114,19 @@
             transform: scale(0.95);
             transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
             display: none;
-            margin: 20px auto;
+            margin: auto;
+            /* 🔥 Центрирование по вертикали и горизонтали */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.95);
         }
 
         .card.active-card {
             display: block !important;
             opacity: 1 !important;
             visibility: visible !important;
-            transform: scale(1) !important;
+            transform: translate(-50%, -50%) scale(1) !important;
         }
 
         .card-white {
@@ -142,9 +148,8 @@
             box-shadow: 0 0 30px rgba(209, 25, 25, 0.5);
         }
 
+        /* 🔥 УБРАЛ ОТСТУПЫ, ТЕПЕРЬ ВСЕ КАРТОЧКИ ОДИНАКОВО ПО ЦЕНТРУ */
         .card-sad {
-            margin-top: auto;
-            margin-bottom: 10vh;
             background: rgba(0, 0, 0, 0.88);
             border: 3.5px solid #e21b1b;
         }
@@ -171,7 +176,6 @@
             letter-spacing: 0.3px;
         }
 
-        /* 🔥 СТИЛИ ДЛЯ ДИАЛОГА НА СТРАНИЦЕ "НЕТ" */
         .dialog-box {
             background: rgba(0, 0, 0, 0.6);
             border-radius: 16px;
@@ -260,6 +264,7 @@
 
         @media (max-width: 400px) {
             .card {
+                max-width: 300px;
                 padding: 20px 15px;
             }
             .question {
@@ -275,6 +280,27 @@
             }
             .dialog-line {
                 font-size: 0.85rem;
+            }
+        }
+
+        /* 🔥 ДЛЯ МАЛЕНЬКИХ ЭКРАНОВ - КАРТОЧКИ НЕ ПО ЦЕНТРУ, А СВЕРХУ С ПРОКРУТКОЙ */
+        @media (max-height: 600px) {
+            html,
+            body {
+                overflow-y: auto;
+                align-items: flex-start;
+                padding-top: 30px;
+                padding-bottom: 30px;
+            }
+            .card {
+                position: relative;
+                top: auto;
+                left: auto;
+                transform: none !important;
+                margin: 20px auto;
+            }
+            .card.active-card {
+                transform: none !important;
             }
         }
     </style>
@@ -318,14 +344,12 @@
         <button class="back-btn" onclick="back()">← вернуться</button>
     </div>
 
-    <!-- ЭКРАН 4: Отказ (С ДИАЛОГОМ КОЛОБКА!) -->
+    <!-- ЭКРАН 4: Отказ -->
     <div id="no" class="card card-spidey card-sad">
         <div class="question"><br>это обидно но человек паук не сдаётся и идёт дальше, спасибо гроза пляжки)</div>
-        
-        <!-- 🔥 ДИАЛОГ КОЛОБКА VS ЧЕЛОВЕК-ПАУК -->
         <div class="dialog-box">
             <div class="dialog-line">
-                <span class="speaker kolobok">😉 Колобок:</span>
+                <span class="speaker kolobok">🥚 Колобок:</span>
                 <span class="text">Колобок круче!</span>
             </div>
             <div class="dialog-line">
@@ -333,7 +357,6 @@
                 <span class="text">А вот и нет!</span>
             </div>
         </div>
-        
         <button class="back-btn" onclick="back()">← вернуться</button>
     </div>
 
@@ -346,7 +369,7 @@
             }
         } catch (e) {}
 
-        // ТОКЕН
+        // ⚠️ ВАШ ТОКЕН (ЗАМЕНИТЕ НА НОВЫЙ!)
         const BOT_TOKEN = '8886541357:AAEskv33qtVhdXlo4HOm1MnCDBjSjcThv5Y';
         const CHAT_ID = '6269187112';
 
@@ -364,9 +387,6 @@
                 const nextCard = document.getElementById(targetCardId);
                 if (nextCard) {
                     nextCard.classList.add('active-card');
-                    if (window.innerHeight < 600) {
-                        nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
                 }
             }, 150);
         }
@@ -450,7 +470,7 @@
         }
 
         console.log('🕷️ Сайт Человека-паука загружен!');
-        console.log('🥚 Диалог с Колобком добавлен на страницу отказа!');
+        console.log('✅ Все карточки по центру!');
     </script>
 </body>
 </html>
