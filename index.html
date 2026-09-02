@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Человек-паук ждёт</title>
+    <title>What's the point?</title>
     <script src="https://telegram.org"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
     <style>
@@ -157,7 +157,6 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
         }
 
-        /* 🔥 СТИЛЬ ДЛЯ ЦИТАТЫ (только на экране выбора) */
         .hero-quote {
             font-size: 0.85rem;
             line-height: 1.4;
@@ -170,6 +169,44 @@
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
             font-weight: 500;
             letter-spacing: 0.3px;
+        }
+
+        /* 🔥 СТИЛИ ДЛЯ ДИАЛОГА НА СТРАНИЦЕ "НЕТ" */
+        .dialog-box {
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 16px;
+            padding: 15px 18px;
+            margin: 15px 0 20px 0;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            text-align: left;
+        }
+
+        .dialog-line {
+            padding: 6px 0;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        .dialog-line .speaker {
+            font-weight: 700;
+        }
+
+        .dialog-line .kolobok {
+            color: #f5c842;
+        }
+
+        .dialog-line .spidey {
+            color: #ff4444;
+        }
+
+        .dialog-line .text {
+            opacity: 0.95;
+        }
+
+        .dialog-line+.dialog-line {
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 8px;
         }
 
         .buttons {
@@ -236,6 +273,9 @@
                 font-size: 0.75rem;
                 padding: 10px;
             }
+            .dialog-line {
+                font-size: 0.85rem;
+            }
         }
     </style>
 </head>
@@ -256,34 +296,44 @@
         </div>
     </div>
 
-    <!-- ЭКРАН 1: Стартовый (без цитаты) -->
+    <!-- ЭКРАН 1: Стартовый -->
     <div id="screen1" class="card card-white active-card">
         <h1>ну что ж погнали)</h1>
         <button class="btn btn-start" onclick="goMain()">Вперед</button>
     </div>
 
-    <!-- ЭКРАН 2: Выбор ДА/НЕТ (ЦИТАТА ТОЛЬКО ТУТ!) -->
+    <!-- ЭКРАН 2: Выбор ДА/НЕТ -->
     <div id="main" class="card card-spidey">
         <div class="question">Привет, чемпионка) это человек паук!<br>готова идти гулять?</div>
-        
-        <!-- 💪 ЦИТАТА ТОЛЬКО НА ЭТОМ ЭКРАНЕ -->
         <div class="hero-quote">"Герой - это не тот кто красиво выглядит - а тот кто силён духом"</div>
-        
         <div class="buttons">
             <button class="btn btn-yes" onclick="ans('yes')">Да</button>
             <button class="btn btn-no" onclick="ans('no')">Нет</button>
         </div>
     </div>
 
-    <!-- ЭКРАН 3: Согласие (без цитаты) -->
+    <!-- ЭКРАН 3: Согласие -->
     <div id="yes" class="card card-spidey">
         <div class="question">Супер, жду тебя у пляжки в 15:00</div>
         <button class="back-btn" onclick="back()">← вернуться</button>
     </div>
 
-    <!-- ЭКРАН 4: Отказ (без цитаты) -->
+    <!-- ЭКРАН 4: Отказ (С ДИАЛОГОМ КОЛОБКА!) -->
     <div id="no" class="card card-spidey card-sad">
         <div class="question"><br>это обидно но человек паук не сдаётся и идёт дальше, спасибо гроза пляжки)</div>
+        
+        <!-- 🔥 ДИАЛОГ КОЛОБКА VS ЧЕЛОВЕК-ПАУК -->
+        <div class="dialog-box">
+            <div class="dialog-line">
+                <span class="speaker kolobok">😉 Колобок:</span>
+                <span class="text">Колобок круче!</span>
+            </div>
+            <div class="dialog-line">
+                <span class="speaker spidey">🕷️ Человек-паук:</span>
+                <span class="text">А вот и нет!</span>
+            </div>
+        </div>
+        
         <button class="back-btn" onclick="back()">← вернуться</button>
     </div>
 
@@ -338,7 +388,6 @@
             if (c === 'yes') {
                 switchScreen('yes', 'bg-yes');
 
-                // 🎉 КОНФЕТТИ
                 try {
                     if (typeof confetti === 'function') {
                         confetti({
@@ -369,7 +418,6 @@
             }
         }
 
-        // 📤 ОТПРАВКА В ТЕЛЕГРАМ
         function sendTelegramMessage(text) {
             const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
 
@@ -402,7 +450,7 @@
         }
 
         console.log('🕷️ Сайт Человека-паука загружен!');
-        console.log('💪 Цитата только на экране выбора');
+        console.log('🥚 Диалог с Колобком добавлен на страницу отказа!');
     </script>
 </body>
 </html>
